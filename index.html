@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Registrar Marca no INPI – Registre sua marca com um profissional certificado no INPI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Poppins:wght@300;400;500;600;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg-main: #1c1d21;
+      --bg-secondary: #22232a;
+      --bg-card: #2b2c33;
+      --bg-card-light: #33343f;
+      --yellow: #fbc643;
+      --yellow-dark: #e5a800;
+      --white: #ffffff;
+      --gray-light: #bababa;
+      --gray-mid: #7a7a7a;
+      --font-title: 'Syne', sans-serif;
+      --font-body: 'Poppins', sans-serif;
+      --font-text: 'Roboto', sans-serif;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: var(--font-body); background-color: var(--bg-main); color: var(--white); overflow-x: hidden; }
+    a { text-decoration: none; color: inherit; }
+    img { max-width: 100%; display: block; }
+
+    /* NAVBAR */
+    .navbar {
+      position: fixed; top: 16px; left: 50%; transform: translateX(-50%);
+      width: calc(100% - 40px); max-width: 1200px;
+      background: rgba(28,29,33,0.95); backdrop-filter: blur(12px);
+      border: 1px solid rgba(255,255,255,0.07); border-radius: 16px;
+      padding: 14px 32px; display: flex; align-items: center;
+      justify-content: space-between; z-index: 9999;
+      transition: background 0.3s, box-shadow 0.3s, transform 0.4s ease, opacity 0.4s ease;
+    }
+    .navbar-logo img { height: 44px; width: auto; }
+    .navbar-links { display: flex; gap: 36px; list-style: none; }
+    .navbar-links a { color: #cccccc; font-family: var(--font-body); font-size: 15px; font-weight: 300; transition: color 0.2s; }
+    .navbar-links a:hover { color: var(--yellow); }
+    .btn-nav {
+      background: var(--yellow); color: #111; font-family: var(--font-body);
+      font-size: 13px; font-weight: 400; padding: 10px 22px;
+      border-radius: 50px; border: none; cursor: pointer;
+      transition: background 0.2s, transform 0.2s; display: inline-block;
+    }
+    .btn-nav:hover { background: var(--yellow-dark); transform: scale(1.04); }
+
+    /* HERO */
+    #home {
+      min-height: 100vh; background-color: var(--bg-main);
+      background-image:
+        radial-gradient(ellipse 60% 50% at 10% 20%, rgba(251,198,67,0.06) 0%, transparent 60%),
+        radial-gradient(ellipse 40% 40% at 85% 75%, rgba(251,198,67,0.04) 0%, transparent 60%);
+      display: flex; align-items: center; padding: 80px 20px 40px;
+      position: relative; overflow: clip;
+    }
+    #home::before {
+      content: ''; position: absolute; inset: 0;
+      background-image: radial-gradient(circle, rgba(251,198,67,0.15) 1px, transparent 1px);
+      background-size: 40px 40px; opacity: 0.25; pointer-events: none;
+    }
+    .hero-container {
+      max-width: 1200px; margin: 0 auto 0 auto;
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 60px; align-items: center; width: 100%;
+      padding-left: 80px;
+    }
+    .hero-image-wrap { position: relative; display: flex; justify-content: center; overflow: visible; clip-path: none; padding-bottom: 40px; }
+    .hero-image-wrap > img:first-child { width: 100%; max-width: 550px; border-radius: 24px; object-fit: cover; margin-left: auto; margin-top: 50px; }
+    .hero-cert-badge {
+      position: absolute; bottom: 80px; right: 0; width: 130px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+      border-radius: 8px;
+    }
+    @keyframes slideFromRight { from { opacity: 0; transform: translateX(120px); } to { opacity: 1; transform: translateX(0); } }
+    @keyframes slideFromLeft { from { opacity: 0; transform: translateX(-120px); } to { opacity: 1; transform: translateX(0); } }
+    @keyframes fadeInCert { from { opacity: 0; transform: translateX(-100px); } to { opacity: 1; transform: translateX(0); } }
+    @keyframes scaleIn { from { opacity: 0; transform: scale(0.7); } to { opacity: 1; transform: scale(1); } }
+
+    .motivos-col-left, .motivos-col-right, .motivos-form-card-anim { opacity: 1; }
+
+    .hero-content { position: relative; z-index: 2; }
+    .hero-image-wrap > img:first-child { animation: slideFromLeft 0.7s ease-out both; }
+    .hero-cert-badge { animation: fadeInCert 0.8s ease-out 0.7s both; }
+    .hero-content { animation: slideFromRight 0.7s ease-out both; }
+    .hero-content h1 {
+      font-family: var(--font-title); font-size: clamp(1.8rem, 3vw, 2.6rem);
+      font-weight: 700; line-height: 1.15; margin-bottom: 28px; color: var(--white);
+    }
+    .hero-content h1 span.yellow { color: var(--yellow); }
+    .hero-checklist { list-style: none; margin-bottom: 36px; display: flex; flex-direction: column; gap: 14px; }
+    .hero-checklist li { display: flex; align-items: center; gap: 12px; font-size: 16px; font-weight: 300; color: #cccccc; }
+    .hero-checklist li::before {
+      content: ''; width: 20px; height: 20px; background: var(--yellow);
+      border-radius: 50%; flex-shrink: 0;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23111'%3E%3Cpath d='M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z' stroke='%23111' stroke-width='1'/%3E%3C/svg%3E");
+      background-size: 14px; background-repeat: no-repeat; background-position: center;
+    }
+    .btn-primary {
+      background: var(--yellow); color: #111; font-family: var(--font-body);
+      font-size: 15px; font-weight: 400; padding: 14px 36px;
+      border-radius: 10px; border: none; cursor: pointer;
+      display: inline-block;
+      transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 4px 24px rgba(251,198,67,0.3);
+    }
+    .btn-primary:hover { background: var(--yellow-dark); transform: translateY(-2px); box-shadow: 0 8px 32px rgba(251,198,67,0.4); }
+
+    /* SECTION */
+    .section { padding: 100px 20px; }
+    .section-inner { max-width: 1200px; margin: 0 auto; }
+    .section-label { font-family: var(--font-body); font-size: 13px; font-weight: 400; letter-spacing: 1.5px; text-transform: uppercase; color: var(--yellow); margin-bottom: 12px; display: block; }
+    .section-title { font-family: var(--font-title); font-size: clamp(1.8rem, 3.5vw, 2.8rem); font-weight: 600; line-height: 1.2; color: var(--white); margin-bottom: 16px; }
+    .section-subtitle { font-size: 16px; color: var(--gray-light); max-width: 600px; line-height: 1.7; }
+
+    /* TICKER */
+    .ticker-bar { background: var(--yellow); padding: 10px 0; overflow: hidden; white-space: nowrap; margin-top: -30px; position: relative; z-index: 1; }
+    .ticker-track { display: inline-flex; align-items: center; gap: 80px; animation: ticker 30s linear infinite; white-space: nowrap; }
+    .ticker-track span { font-family: var(--font-body); font-size: 14px; font-weight: 700; color: #111; letter-spacing: 1.5px; text-transform: uppercase; flex-shrink: 0; }
+    .ticker-dot { display: none; }
+    @keyframes ticker { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+    /* MOTIVOS */
+    #motivos { background: var(--bg-main); }
+    .motivos-top { text-align: center; margin-bottom: 60px; }
+    .motivos-top .section-subtitle { margin: 0 auto; }
+    .motivos-grid { display: grid; grid-template-columns: 1fr auto 1fr; gap: 40px; align-items: center; }
+    .motivos-col { display: flex; flex-direction: column; gap: 32px; justify-content: center; }
+    .motivos-col:first-child .motivo-item { text-align: right; }
+    .motivos-col:first-child .motivo-icon { margin: 0 0 16px auto; }
+    .motivos-col:last-child .motivo-item { text-align: left; }
+    .motivos-col:last-child .motivo-icon { margin: 0 auto 16px 0; }
+    .motivo-item { }
+    .motivo-icon { width: 44px; height: 44px; background: var(--yellow); border-radius: 10px; display: flex; align-items: center; justify-content: center; margin-bottom: 8px; }
+    .motivo-icon svg { width: 22px; height: 22px; fill: #111; }
+    .motivo-item h3 { font-family: var(--font-title); font-size: 18px; font-weight: 700; margin-bottom: 6px; color: var(--white); }
+    .motivo-item p { font-size: 14px; color: var(--gray-light); line-height: 1.7; }
+    .motivos-form-card { background: var(--yellow); border-radius: 20px; padding: 40px 36px; min-width: 420px; max-width: 460px; }
+    .motivos-form-card h2 { font-family: var(--font-title); font-size: 2rem; font-weight: 700; color: #2a2a2a; line-height: 1.15; margin-bottom: 16px; }
+    .form-group { margin-bottom: 10px; }
+    .form-group label { display: block; font-size: 14px; font-weight: 500; color: #2a2a2a; margin-bottom: 4px; }
+    .form-group input, .form-group textarea { width: 100%; padding: 12px 16px; border: none; border-radius: 6px; font-size: 14px; font-family: var(--font-body); background: rgba(255,255,255,0.9); color: #333; outline: none; transition: background 0.2s; }
+    .form-group input:focus, .form-group textarea:focus { background: #fff; }
+    .form-group textarea { height: 130px; resize: vertical; }
+    .btn-form { width: 100%; background: #2a2a2a; color: var(--white); font-family: var(--font-body); font-size: 15px; font-weight: 400; padding: 12px; border-radius: 6px; border: none; cursor: pointer; margin-top: 6px; transition: background 0.2s; }
+    .btn-form:hover { background: #333; }
+
+    /* LOGOS */
+    .logos-section { background: transparent; padding: 40px 0; overflow: hidden; }
+    .marquee-wrapper { display: flex; gap: 100px; animation: marquee 20s linear infinite; width: max-content; align-items: center; }
+    .marquee-wrapper img { height: 32px; width: auto; object-fit: contain; filter: brightness(0) invert(1); opacity: 0.4; }
+    @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+    /* PREÇOS */
+    #precos { background: var(--bg-main); text-align: center; }
+    .precos-header { margin-bottom: 48px; }
+    .price-toggle-wrap { display: flex; align-items: center; justify-content: center; gap: 16px; margin-bottom: 48px; }
+    .price-toggle-label { font-size: 15px; font-weight: 300; color: var(--white); }
+    .toggle-switch { position: relative; width: 52px; height: 28px; background: #444; border-radius: 50px; cursor: pointer; transition: background 0.3s; }
+    .toggle-switch::after { content: ''; position: absolute; top: 4px; left: 4px; width: 20px; height: 20px; background: var(--yellow); border-radius: 50%; transition: transform 0.3s; }
+    .toggle-switch.active { background: var(--yellow); }
+    .toggle-switch.active::after { transform: translateX(24px); background: #111; }
+    .precos-cards { display: grid; grid-template-columns: 1fr; max-width: 380px; margin: 0 auto; }
+    .price-card { background: var(--bg-card); border-radius: 24px; padding: 44px 40px; border: 1px solid rgba(255,255,255,0.07); text-align: center; }
+    .price-card.hidden { display: none; }
+    .price-card-title { font-family: var(--font-title); font-size: 22px; font-weight: 700; color: var(--white); margin-bottom: 4px; }
+    .price-card-subtitle { color: var(--yellow); font-size: 18px; font-weight: 600; margin-bottom: 24px; }
+    .price-value { margin-bottom: 28px; display: inline-flex; align-items: flex-start; gap: 2px; }
+    .price-currency { font-size: 14px; font-weight: 400; color: var(--white); line-height: 1.4; margin-top: 4px; font-family: var(--font-title); }
+    .price-amount { font-family: var(--font-title); font-size: 64px; font-weight: 700; color: var(--white); line-height: 1; letter-spacing: -2px; }
+    .price-period { font-size: 16px; color: var(--yellow); font-family: var(--font-title); font-weight: 600; align-self: flex-end; margin-bottom: 8px; margin-left: 4px; }
+    .price-save { display: inline-block; background: rgba(251,198,67,0.15); color: var(--yellow); font-size: 12px; font-weight: 700; padding: 4px 12px; border-radius: 50px; margin-bottom: 16px; }
+    .price-features { list-style: none; margin-bottom: 32px; text-align: left; display: inline-flex; flex-direction: column; gap: 12px; width: 100%; }
+    .price-features li { display: flex; align-items: center; gap: 12px; font-size: 14px; color: var(--gray-light); }
+    .price-features li::before { content: '✓'; color: var(--yellow); font-weight: 700; font-size: 16px; flex-shrink: 0; }
+
+    /* DEPOIMENTOS */
+    #depoimentos { background: var(--bg-main); }
+    .depoimentos-grid-wrap { display: grid; grid-template-columns: 1fr 2fr; gap: 60px; align-items: start; }
+    .google-logo img { width: 90px; margin-top: 16px; }
+    .depoimentos-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .depo-card { background: var(--bg-card-light); border-radius: 16px; padding: 28px; }
+    .depo-name { font-family: var(--font-title); font-size: 16px; font-weight: 700; color: var(--white); margin-bottom: 4px; }
+    .depo-role { font-size: 13px; color: var(--yellow); margin-bottom: 14px; }
+    .depo-text { font-size: 14px; color: var(--gray-light); line-height: 1.7; }
+
+    /* FAQ */
+    #faq { background: var(--bg-main); }
+    .faq-wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: start; }
+    .faq-list { display: flex; flex-direction: column; }
+    .faq-item { border-bottom: 1px solid rgba(255,255,255,0.1); }
+    .faq-question { width: 100%; background: none; border: none; color: var(--white); font-family: var(--font-body); font-size: 15px; font-weight: 500; text-align: left; padding: 20px 0; cursor: pointer; display: flex; align-items: center; justify-content: space-between; gap: 16px; transition: color 0.2s; }
+    .faq-question:hover { color: var(--yellow); }
+    .faq-plus { color: var(--yellow); font-size: 22px; font-weight: 300; flex-shrink: 0; transition: transform 0.3s; }
+    .faq-item.open .faq-plus { transform: rotate(45deg); }
+    .faq-answer { max-height: 0; overflow: hidden; transition: max-height 0.4s ease; }
+    .faq-item.open .faq-answer { max-height: 200px; }
+    .faq-answer p { font-size: 14px; color: var(--gray-light); line-height: 1.7; padding-bottom: 20px; }
+    .faq-right { text-align: left; }
+    .faq-right .section-label { display: block; margin-bottom: 12px; }
+    .faq-right .section-title { margin-bottom: 12px; }
+    .faq-right .section-subtitle { margin-bottom: 32px; }
+
+    /* CTA */
+    #contato { padding: 40px 20px; }
+    .cta-card {
+      max-width: 1200px; margin: 0 auto; background: var(--yellow);
+      border-radius: 28px; padding: 30px 48px; text-align: center;
+      position: relative; overflow: clip;
+      display: block; text-decoration: none; cursor: pointer;
+      transition: opacity 0.2s;
+    }
+    .cta-card:hover { opacity: 0.92; }
+    .cta-card::before {
+      content: ''; position: absolute; inset: 0;
+      background-image: repeating-linear-gradient(-45deg, transparent, transparent 20px, rgba(0,0,0,0.04) 20px, rgba(0,0,0,0.04) 22px);
+    }
+    .cta-tag { display: inline-block; background: #111; color: var(--white); font-size: 13px; font-weight: 600; padding: 8px 20px; border-radius: 50px; margin-bottom: 24px; position: relative; }
+    .cta-card h2 { font-family: var(--font-title); font-size: clamp(1.6rem, 3vw, 2.2rem); font-weight: 500; color: #111; margin-bottom: 8px; position: relative; }
+    .cta-card p { font-size: 15px; font-weight: 300; color: #333; margin-bottom: 20px; position: relative; }
+    .cta-phone { display: inline-flex; align-items: center; gap: 10px; font-family: var(--font-title); font-size: 1.2rem; font-weight: 500; color: #111; position: relative; }
+
+    /* FOOTER */
+    footer { background: var(--bg-secondary); border-top: 1px solid rgba(255,255,255,0.06); padding: 28px 20px; text-align: center; }
+    footer p { font-size: 13px; color: var(--gray-mid); }
+    footer a { color: var(--yellow); font-weight: 600; }
+
+    /* WHATSAPP */
+    .whatsapp-float { position: fixed; bottom: 28px; right: 28px; width: 56px; height: 56px; background: var(--yellow); border-radius: 50%; display: flex; align-items: center; justify-content: center; z-index: 999; box-shadow: 0 4px 20px rgba(251,198,67,0.4); transition: transform 0.2s, box-shadow 0.2s; }
+    .whatsapp-float:hover { transform: scale(1.1); box-shadow: 0 8px 32px rgba(251,198,67,0.5); }
+    .whatsapp-float svg { width: 28px; height: 28px; fill: #111; }
+
+    /* RESPONSIVE */
+    @media (max-width: 900px) {
+      .hero-container { grid-template-columns: 1fr; text-align: center; }
+      .hero-image-wrap { order: -1; }
+      .hero-checklist { align-items: center; }
+      .motivos-grid { display: flex; flex-direction: column; gap: 32px; }
+      .motivos-form-card { order: 7; max-width: 100%; min-width: unset; }
+      .depoimentos-grid-wrap { grid-template-columns: 1fr; }
+      .depoimentos-cards { grid-template-columns: 1fr; }
+      .faq-wrap { grid-template-columns: 1fr; }
+      .navbar-links { display: none; }
+      .cta-card { padding: 40px 24px; }
+    }
+    @media (max-width: 600px) {
+      .navbar { padding: 12px 20px; }
+      .section { padding: 60px 20px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<header>
+  <nav class="navbar">
+    <a href="#home" class="navbar-logo">
+      <img src="https://zenpi.com.br/wp-content/uploads/2025/05/IMG_0297.png" alt="ZENPI Logo" />
+    </a>
+    <ul class="navbar-links">
+      <li><a href="#home">Home</a></li>
+      <li><a href="#motivos">Motivos</a></li>
+      <li><a href="#precos">Preços</a></li>
+      <li><a href="#depoimentos">Depoimentos</a></li>
+      <li><a href="#contato">Contato</a></li>
+    </ul>
+    <a href="https://wa.me/5511969937808" class="btn-nav">Registrar marca</a>
+  </nav>
+</header>
+
+<!-- HERO -->
+<section id="home">
+  <div class="hero-container">
+    <div class="hero-image-wrap">
+      <img src="https://zenpi.com.br/wp-content/uploads/2025/11/minha-foto-2.webp" alt="Especialista INPI" />
+      <img class="hero-cert-badge" src="certificado.webp" alt="Certificado INPI" />
+    </div>
+    <div class="hero-content">
+      <h1>
+        Registre sua <span class="yellow">marca</span><br />
+        com um <span class="yellow">profissional</span><br />
+        certificado <span class="yellow">no INPI</span>
+      </h1>
+      <ul class="hero-checklist">
+        <li>Consulta de Viabilidade Grátis</li>
+        <li>Pedido Protocolado em 48 Horas</li>
+        <li>Registro do Nome e Logotipo</li>
+        <li>Acompanhamento Processual</li>
+      </ul>
+      <a href="https://wa.me/5511969937808" class="btn-primary">Registrar minha Marca</a>
+    </div>
+  </div>
+</section>
+
+<!-- FAIXA TICKER -->
+<div class="ticker-bar">
+  <div class="ticker-track">
+    <span>PROTEJA SUA HISTÓRIA, REGISTRE SUA MARCA ®</span>
+    <span class="ticker-dot">◆</span>
+    <span>92% DOS REGISTROS DE MARCA APROVADOS ®</span>
+    <span class="ticker-dot">◆</span>
+    <span>PEDIDO PROTOCOLADO EM 48 HORAS ®</span>
+    <span class="ticker-dot">◆</span>
+    <span>PROTEJA SUA HISTÓRIA, REGISTRE SUA MARCA ®</span>
+    <span class="ticker-dot">◆</span>
+    <span>92% DOS REGISTROS DE MARCA APROVADOS ®</span>
+    <span class="ticker-dot">◆</span>
+    <span>PEDIDO PROTOCOLADO EM 48 HORAS ®</span>
+    <span class="ticker-dot">◆</span>
+    <span>PROTEJA SUA HISTÓRIA, REGISTRE SUA MARCA ®</span>
+    <span class="ticker-dot">◆</span>
+    <span>92% DOS REGISTROS DE MARCA APROVADOS ®</span>
+    <span class="ticker-dot">◆</span>
+    <span>PEDIDO PROTOCOLADO EM 48 HORAS ®</span>
+    <span class="ticker-dot">◆</span>
+  </div>
+</div>
+
+<!-- MOTIVOS -->
+<section class="section" id="motivos">
+  <div class="section-inner">
+    <div class="motivos-top">
+      <h2 class="section-title">Motivos para Registrar sua Marca</h2>
+      <p class="section-subtitle">Você sabia que qualquer um pode registrar o nome da sua marca?</p>
+    </div>
+    <div class="motivos-grid">
+      <div class="motivos-col motivos-col-left">
+        <div class="motivo-item motivo-1">
+          <div class="motivo-icon"><svg viewBox="0 0 384 512"><path d="M97.12 362.63c-8.69-8.69-4.16-6.24-25.12-11.85-9.51-2.55-17.87-7.45-25.43-13.32L1.2 448.7c-4.39 10.77 3.81 22.47 15.43 22.03l52.69-2.01L105.56 507c8 8.44 22.04 5.81 26.43-4.96l52.05-127.62c-10.84 6.04-22.87 9.58-35.31 9.58-19.5 0-37.82-7.59-51.61-21.37zM382.8 448.7l-45.37-111.24c-7.56 5.88-15.92 10.77-25.43 13.32-21.07 5.64-16.45 3.18-25.12 11.85-13.79 13.78-32.12 21.37-51.62 21.37-12.44 0-24.47-3.55-35.31-9.58L252 502.04c4.39 10.77 18.44 13.4 26.43 4.96l36.25-38.28 52.69 2.01c11.62.44 19.82-11.27 15.43-22.03zM263 340c15.28-15.55 17.03-14.21 38.79-20.14 13.89-3.79 24.75-14.84 28.47-28.98 7.48-28.4 5.54-24.97 25.95-45.75 10.17-10.35 14.14-25.44 10.42-39.58-7.47-28.38-7.48-24.42 0-52.83 3.72-14.14-.25-29.23-10.42-39.58-20.41-20.78-18.47-17.36-25.95-45.75-3.72-14.14-14.58-25.19-28.47-28.98-27.88-7.61-24.52-5.62-44.95-26.41-10.17-10.35-25-14.4-38.89-10.61-27.87 7.6-23.98 7.61-51.9 0-13.89-3.79-28.72.25-38.89 10.61-20.41 20.78-17.05 18.8-44.94 26.41-13.89 3.79-24.75 14.84-28.47 28.98-7.47 28.39-5.54 24.97-25.95 45.75-10.17 10.35-14.15 25.44-10.42 39.58 7.47 28.36 7.48 24.4 0 52.82-3.72 14.14.25 29.23 10.42 39.59 20.41 20.78 18.47 17.35 25.95 45.75 3.72 14.14 14.58 25.19 28.47 28.98C104.6 325.96 106.27 325 121 340c13.23 13.47 33.84 15.88 49.74 5.82a39.676 39.676 0 0 1 42.53 0c15.89 10.06 36.5 7.65 49.73-5.82zM97.66 175.96c0-53.03 42.24-96.02 94.34-96.02s94.34 42.99 94.34 96.02-42.24 96.02-94.34 96.02-94.34-42.99-94.34-96.02z"/></svg></div>
+          <h3>Exclusividade no uso</h3>
+          <p>Só o registro no INPI garante que ninguém<br>mais poderá usar seu nome ou logo em todo<br>território internacional.</p>
+        </div>
+        <div class="motivo-item motivo-3">
+          <div class="motivo-icon"><svg viewBox="0 0 640 512"><path d="M132.65,212.32,36.21,137.78A63.4,63.4,0,0,0,32,160a63.84,63.84,0,0,0,100.65,52.32Zm40.44,62.28A63.79,63.79,0,0,0,128,256H64A64.06,64.06,0,0,0,0,320v32a32,32,0,0,0,32,32H97.91A146.62,146.62,0,0,1,173.09,274.6ZM544,224a64,64,0,1,0-64-64A64.06,64.06,0,0,0,544,224ZM500.56,355.11a114.24,114.24,0,0,0-84.47-65.28L361,247.23c41.46-16.3,71-55.92,71-103.23A111.93,111.93,0,0,0,320,32c-57.14,0-103.69,42.83-110.6,98.08L45.46,3.38A16,16,0,0,0,23,6.19L3.37,31.46A16,16,0,0,0,6.18,53.91L594.53,508.63A16,16,0,0,0,617,505.82l19.64-25.27a16,16,0,0,0-2.81-22.45ZM128,403.21V432a48,48,0,0,0,48,48H464a47.45,47.45,0,0,0,12.57-1.87L232,289.13C173.74,294.83,128,343.42,128,403.21ZM576,256H512a63.79,63.79,0,0,0-45.09,18.6A146.29,146.29,0,0,1,542,384h66a32,32,0,0,0,32-32V320A64.06,64.06,0,0,0,576,256Z"/></svg></div>
+          <h3>Bloqueio de concorrentes</h3>
+          <p>Sem registro, qualquer um pode te copiar,<br>confundir seus clientes e até te obrigar<br>a mudar o marca.</p>
+        </div>
+        <div class="motivo-item motivo-5">
+          <div class="motivo-icon"><svg viewBox="0 0 640 512"><path d="M216 288h-48c-8.84 0-16 7.16-16 16v192c0 8.84 7.16 16 16 16h48c8.84 0 16-7.16 16-16V304c0-8.84-7.16-16-16-16zM88 384H40c-8.84 0-16 7.16-16 16v96c0 8.84 7.16 16 16 16h48c8.84 0 16-7.16 16-16v-96c0-8.84-7.16-16-16-16zm256-192h-48c-8.84 0-16 7.16-16 16v288c0 8.84 7.16 16 16 16h48c8.84 0 16-7.16 16-16V208c0-8.84-7.16-16-16-16zm128-96h-48c-8.84 0-16 7.16-16 16v384c0 8.84 7.16 16 16 16h48c8.84 0 16-7.16 16-16V112c0-8.84-7.16-16-16-16zM600 0h-48c-8.84 0-16 7.16-16 16v480c0 8.84 7.16 16 16 16h48c8.84 0 16-7.16 16-16V16c0-8.84-7.16-16-16-16z"/></svg></div>
+          <h3>Segurança para crescer</h3>
+          <p>Sua marca protegida para expandir para<br>outras cidades, abrir filiais, vender<br>online e franquear sem riscos.</p>
+        </div>
+      </div>
+      <div class="motivos-form-card motivos-form-card-anim">
+        <h2>Sua marca<br />tem valor?<br />Registre.</h2>
+        <hr style="border:none;border-top:1px solid rgba(0,0,0,0.15);margin-bottom:16px;" />
+        <div class="form-group">
+          <label>Nome da Marca:</label>
+          <input type="text" placeholder="Nome para registro" />
+        </div>
+        <div class="form-group">
+          <label>Whatsapp:</label>
+          <input type="tel" placeholder="Ex: (11) 91234-5678" />
+        </div>
+        <div class="form-group">
+          <label>Ramo de Atividade:</label>
+          <textarea placeholder="Área de atuação, produtos, serviços..."></textarea>
+        </div>
+        <a href="https://wa.me/5511969937808" class="btn-form" style="display:block;text-align:center;">Registrar agora</a>
+      </div>
+      <div class="motivos-col motivos-col-right">
+        <div class="motivo-item motivo-2">
+          <div class="motivo-icon"><svg viewBox="0 0 496 512"><path d="M336.5 160C322 70.7 287.8 8 248 8s-74 62.7-88.5 152h177zM152 256c0 22.2 1.2 43.5 3.3 64h185.3c2.1-20.5 3.3-41.8 3.3-64s-1.2-43.5-3.3-64H155.3c-2.1 20.5-3.3 41.8-3.3 64zm324.7-96c-28.6-67.9-86.5-120.4-158-141.6 24.4 33.8 41.2 84.7 50 141.6h108zM177.2 18.4C105.8 39.6 47.8 92.1 19.3 160h108c8.7-56.9 25.5-107.8 49.9-141.6zM487.4 192H372.7c2.1 21 3.3 42.5 3.3 64s-1.2 43-3.3 64h114.6c5.5-20.5 8.6-41.8 8.6-64s-3.1-43.5-8.5-64zM120 256c0-21.5 1.2-43 3.3-64H8.6C3.2 212.5 0 233.8 0 256s3.2 43.5 8.6 64h114.6c-2-21-3.2-42.5-3.2-64zm39.5 96c14.5 89.3 48.7 152 88.5 152s74-62.7 88.5-152h-177zm159.3 141.6c71.4-21.2 129.4-73.7 158-141.6h-108c-8.8 56.9-25.6 107.8-50 141.6zM19.3 352c28.6 67.9 86.5 120.4 158 141.6-24.4-33.8-41.2-84.7-50-141.6h-108z"/></svg></div>
+          <h3>Prioridade de domínio</h3>
+          <p>Tenha vantagem em disputas de domínio<br>na internet, proteja-se ou recupere<br>um domínio perdido.</p>
+        </div>
+        <div class="motivo-item motivo-4">
+          <div class="motivo-icon"><svg viewBox="0 0 544 512"><path d="M304 416h-64a16 16 0 0 0-16 16v32a16 16 0 0 0 16 16h64a16 16 0 0 0 16-16v-32a16 16 0 0 0-16-16zM16 160h48v304a16 16 0 0 0 16 16h32a16 16 0 0 0 16-16V160h48c14.21 0 21.38-17.24 11.31-27.31l-80-96a16 16 0 0 0-22.62 0l-80 96C-5.35 142.74 1.77 160 16 160zm416 0H240a16 16 0 0 0-16 16v32a16 16 0 0 0 16 16h192a16 16 0 0 0 16-16v-32a16 16 0 0 0-16-16zm-64 128H240a16 16 0 0 0-16 16v32a16 16 0 0 0 16 16h128a16 16 0 0 0 16-16v-32a16 16 0 0 0-16-16zM496 32H240a16 16 0 0 0-16 16v32a16 16 0 0 0 16 16h256a16 16 0 0 0 16-16V48a16 16 0 0 0-16-16z"/></svg></div>
+          <h3>Valor de mercado</h3>
+          <p>Uma marca registrada é reconhecida como<br>um ativo de alto valor de mercado por<br>sócios e investidores.</p>
+        </div>
+        <div class="motivo-item motivo-6">
+          <div class="motivo-icon"><svg viewBox="0 0 496 512"><path d="M248 8C111.03 8 0 119.03 0 256s111.03 248 248 248 248-111.03 248-248S384.97 8 248 8zm160 215.5v6.93c0 5.87-3.32 11.24-8.57 13.86l-15.39 7.7a15.485 15.485 0 0 1-15.53-.97l-18.21-12.14a15.52 15.52 0 0 0-13.5-1.81l-2.65.88c-9.7 3.23-13.66 14.79-7.99 23.3l13.24 19.86c2.87 4.31 7.71 6.9 12.89 6.9h8.21c8.56 0 15.5 6.94 15.5 15.5v11.34c0 3.35-1.09 6.62-3.1 9.3l-18.74 24.98c-1.42 1.9-2.39 4.1-2.83 6.43l-4.3 22.83c-.62 3.29-2.29 6.29-4.76 8.56a159.608 159.608 0 0 0-25 29.16l-13.03 19.55a27.756 27.756 0 0 1-23.09 12.36c-10.51 0-20.12-5.94-24.82-15.34a78.902 78.902 0 0 1-8.33-35.29V367.5c0-8.56-6.94-15.5-15.5-15.5h-25.88c-14.49 0-28.38-5.76-38.63-16a54.659 54.659 0 0 1-16-38.63v-14.06c0-17.19 8.1-33.38 21.85-43.7l27.58-20.69a54.663 54.663 0 0 1 32.78-10.93h.89c8.48 0 16.85 1.97 24.43 5.77l14.72 7.36c3.68 1.84 7.93 2.14 11.83.84l47.31-15.77c6.33-2.11 10.6-8.03 10.6-14.7 0-8.56-6.94-15.5-15.5-15.5h-10.09c-4.11 0-8.05-1.63-10.96-4.54l-6.92-6.92a15.493 15.493 0 0 0-10.96-4.54H199.5c-8.56 0-15.5-6.94-15.5-15.5v-4.4c0-7.11 4.84-13.31 11.74-15.04l14.45-3.61c3.74-.94 7-3.23 9.14-6.44l8.08-12.11c2.87-4.31 7.71-6.9 12.89-6.9h24.21c8.56 0 15.5-6.94 15.5-15.5v-21.7C359.23 71.63 422.86 131.02 441.93 208H423.5c-8.56 0-15.5 6.94-15.5 15.5z"/></svg></div>
+          <h3>Registro internacional</h3>
+          <p>Registrar sua marca é o primeiro passo para<br>expandir para outros países e garantir<br>exclusividade global.</p>
+        </div>
+      </div>
+    </div>    </div>
+  </div>
+</section>
+
+<!-- LOGOS MARQUEE -->
+
+<div class="logos-section">
+  <div style="overflow:hidden;">
+    <div class="marquee-wrapper">
+      <img src="https://zenpi.com.br/wp-content/uploads/2025/08/2-1-1.webp" alt="Smiles" />
+      <img src="https://zenpi.com.br/wp-content/uploads/2025/08/3-1-1.webp" alt="Madero" />
+      <img src="https://zenpi.com.br/wp-content/uploads/2025/08/4-1-1.webp" alt="Integral Médica" />
+      <img src="https://zenpi.com.br/wp-content/uploads/2025/08/5-1.webp" alt="Melissa" />
+      <img src="https://zenpi.com.br/wp-content/uploads/2025/08/6-1.webp" alt="Marca 6" />
+      <img src="https://zenpi.com.br/wp-content/uploads/2025/08/7-1.webp" alt="Marca 7" />
+      <img src="https://zenpi.com.br/wp-content/uploads/2025/08/9-1.webp" alt="Marca 9" />
+      <img src="https://zenpi.com.br/wp-content/uploads/2025/08/8-1.webp" alt="Marca 8" />
+      <img src="https://zenpi.com.br/wp-content/uploads/2025/08/2-1-1.webp" alt="Smiles" />
+      <img src="https://zenpi.com.br/wp-content/uploads/2025/08/3-1-1.webp" alt="Madero" />
+      <img src="https://zenpi.com.br/wp-content/uploads/2025/08/4-1-1.webp" alt="Integral Médica" />
+      <img src="https://zenpi.com.br/wp-content/uploads/2025/08/5-1.webp" alt="Melissa" />
+      <img src="https://zenpi.com.br/wp-content/uploads/2025/08/6-1.webp" alt="Marca 6" />
+      <img src="https://zenpi.com.br/wp-content/uploads/2025/08/7-1.webp" alt="Marca 7" />
+      <img src="https://zenpi.com.br/wp-content/uploads/2025/08/9-1.webp" alt="Marca 9" />
+      <img src="https://zenpi.com.br/wp-content/uploads/2025/08/8-1.webp" alt="Marca 8" />
+    </div>
+  </div>
+</div>
+
+<!-- PREÇOS -->
+<section class="section" id="precos">
+  <div class="section-inner">
+    <div class="precos-header">
+      <span class="section-label">Faça como grandes empresas</span>
+      <h2 class="section-title" style="margin-bottom: 8px;">Registre a sua<br />marca também</h2>
+    </div>
+    <div class="price-toggle-wrap">
+      <span class="price-toggle-label">Parcelado</span>
+      <div class="toggle-switch" id="priceToggle" onclick="togglePrice()"></div>
+      <span class="price-toggle-label">À vista</span>
+    </div>
+    <div class="precos-cards">
+      <div class="price-card" id="cardParcelado">
+        <div class="price-card-title">Parcelamento</div>
+        <div class="price-card-subtitle">Sem Juros</div>
+        <div class="price-value">
+          <span class="price-currency">R$</span>
+          <span class="price-amount">157</span>
+          <span class="price-period"> 12x</span>
+        </div>
+        <ul class="price-features">
+          <li>Pesquisa de Conflito de Marcas</li>
+          <li>Preparação dos Documentos</li>
+          <li>Registro de Nome e Logotipo</li>
+          <li>Pedido Protocolado em 48 Horas</li>
+          <li>Acompanhamento de Até 2 Anos</li>
+          <li>Emissão do Certificado de Registro</li>
+          <li>Adequação à Lei 9.279/96</li>
+        </ul>
+        <a href="https://wa.me/5511969937808" class="btn-primary" style="display:block;text-align:center;">Registrar minha marca</a>
+      </div>
+      <div class="price-card hidden" id="cardVista">
+        <div class="price-card-title">Economize</div>
+        <div class="price-card-subtitle">R$315 à vista</div>
+        <div class="price-value">
+          <span class="price-currency">R$</span>
+          <span class="price-amount">1.579</span>
+          <span class="price-period">15% OFF</span>
+        </div>
+        <ul class="price-features">
+          <li>Pesquisa de Conflito de Marcas</li>
+          <li>Preparação dos Documentos</li>
+          <li>Registro de Nome e Logotipo</li>
+          <li>Pedido Protocolado em 48 Horas</li>
+          <li>Acompanhamento de Até 2 Anos</li>
+          <li>Emissão do Certificado de Registro</li>
+          <li>Adequação à Lei 9.279/96</li>
+        </ul>
+        <a href="https://wa.me/5511969937808" class="btn-primary" style="display:block;text-align:center;">Registrar minha marca</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DEPOIMENTOS -->
+<section class="section" id="depoimentos">
+  <div class="section-inner">
+    <div class="depoimentos-grid-wrap">
+      <div class="depoimentos-left">
+        <span class="section-label">Depoimentos</span>
+        <h2 class="section-title">O que nossos Clientes dizem sobre nós</h2>
+        <div class="google-logo">
+          <img src="https://zenpi.com.br/wp-content/uploads/2025/08/Logo-Google-1024x346-1.png" alt="Google" />
+        </div>
+      </div>
+      <div class="depoimentos-cards">
+        <div class="depo-card">
+          <div class="depo-name">Roberto Lima</div>
+          <div class="depo-role">Barbeiro</div>
+          <p class="depo-text">"Além de registrar, me ajudaram a entender como funciona o INPI e me orientaram sobre a melhor forma de proteger minha marca. Vale cada centavo!"</p>
+        </div>
+        <div class="depo-card">
+          <div class="depo-name">Fernanda Souza</div>
+          <div class="depo-role">Nutricionista</div>
+          <p class="depo-text">"Equipe ágil e muito profissional. Fiz tudo online e recebi acompanhamento até o final. Sempre vou indicar de olhos fechados."</p>
+        </div>
+        <div class="depo-card">
+          <div class="depo-name">Carlos Mendes</div>
+          <div class="depo-role">Dono de Hamburgueria</div>
+          <p class="depo-text">"Atendimento excelente! Me explicaram tudo com clareza e cuidaram de todo o processo. Não precisei me preocupar com nada."</p>
+        </div>
+        <div class="depo-card">
+          <div class="depo-name">Juliana Rocha</div>
+          <div class="depo-role">Estéticista</div>
+          <p class="depo-text">"Profissionais de confiança, sempre me atualizavam sobre cada passo. Minha marca foi concedida sem nenhum problema."</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="section" id="faq">
+  <div class="section-inner">
+    <div class="faq-wrap">
+      <div class="faq-list">
+        <div class="faq-item">
+          <button class="faq-question" onclick="toggleFaq(this)">
+            Por que devo registrar minha marca no INPI?
+            <span class="faq-plus">+</span>
+          </button>
+          <div class="faq-answer"><p>O registro no INPI garante exclusividade de uso da sua marca em todo o território nacional. Sem ele, qualquer pessoa pode usar ou registrar o mesmo nome antes de você, impedindo sua operação.</p></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-question" onclick="toggleFaq(this)">
+            Preciso ter CNPJ para registrar minha marca?
+            <span class="faq-plus">+</span>
+          </button>
+          <div class="faq-answer"><p>Não. Pessoas físicas (CPF) também podem registrar marcas no INPI. Isso é especialmente útil para profissionais autônomos, freelancers e empreendedores individuais.</p></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-question" onclick="toggleFaq(this)">
+            Quanto tempo vale o registro da marca INPI?
+            <span class="faq-plus">+</span>
+          </button>
+          <div class="faq-answer"><p>O registro de marca no INPI tem validade de 10 anos a partir da data de concessão, podendo ser renovado por períodos iguais e sucessivos indefinidamente.</p></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-question" onclick="toggleFaq(this)">
+            Qual a diferença entre razão social e marca?
+            <span class="faq-plus">+</span>
+          </button>
+          <div class="faq-answer"><p>A razão social é o nome jurídico da empresa no CNPJ (registro na Junta Comercial). A marca é o sinal distintivo — nome, logo ou slogan — que identifica produtos e serviços no mercado. São proteções diferentes e independentes.</p></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-question" onclick="toggleFaq(this)">
+            Posso perder minha marca se não registrar?
+            <span class="faq-plus">+</span>
+          </button>
+          <div class="faq-answer"><p>Sim. No Brasil, o direito sobre a marca é adquirido pelo registro, e não pelo uso. Se um concorrente registrar antes de você, ele terá exclusividade legal e você poderá ser obrigado a mudar seu nome.</p></div>
+        </div>
+      </div>
+      <div class="faq-right">
+        <span class="section-label">Perguntas Frequentes</span>
+        <h2 class="section-title">Tire suas dúvidas sobre registro de marca</h2>
+        <p class="section-subtitle">Reunimos as principais informações para te ajudar a entender como funciona, por que é importante registrar sua marca e o que você precisa fazer para se proteger.</p>
+        <br />
+        <a href="https://wa.me/5511969937808" class="btn-primary">Tirar dúvidas</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section id="contato">
+  <a class="cta-card" href="https://wa.me/5511969937808" target="_blank">
+    <span class="cta-tag">Fale conosco</span>
+    <h2>Ainda têm dúvidas?</h2>
+    <p>Ligue para um de nossos consultores</p>
+    <span class="cta-phone">
+      <svg viewBox="0 0 24 24" width="28" height="28" fill="#111"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
+      +55 (11) 96993-7808
+    </span>
+  </a>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p>© 2025 ZENPI · Todos os direitos reservados.</p>
+</footer>
+
+<!-- WHATSAPP FLUTUANTE -->
+<a class="whatsapp-float" href="https://wa.me/5511969937808" target="_blank" aria-label="WhatsApp">
+  <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+</a>
+
+<script>
+  const cert = document.querySelector('.hero-cert-badge');
+  const heroSection = document.querySelector('#home');
+  if (cert && heroSection) {
+    setTimeout(() => {
+      cert.style.animation = 'none';
+      cert.style.opacity = '1';
+      cert.style.transform = 'translate(0, 0)';
+      cert.style.transition = 'transform 0.15s ease-out';
+
+      heroSection.addEventListener('mousemove', (e) => {
+        const rect = heroSection.getBoundingClientRect();
+        const cx = rect.left + rect.width / 2;
+        const cy = rect.top + rect.height / 2;
+        const dx = (e.clientX - cx) / rect.width;
+        const dy = (e.clientY - cy) / rect.height;
+        cert.style.transform = `translate(${dx * 22}px, ${dy * 18}px)`;
+      });
+      heroSection.addEventListener('mouseleave', () => {
+        cert.style.transform = 'translate(0, 0)';
+      });
+    }, 1500);
+  }
+
+  let isVista = false;
+  function togglePrice() {
+    isVista = !isVista;
+    document.getElementById('priceToggle').classList.toggle('active', isVista);
+    document.getElementById('cardParcelado').classList.toggle('hidden', isVista);
+    document.getElementById('cardVista').classList.toggle('hidden', !isVista);
+  }
+  function toggleFaq(btn) {
+    const item = btn.closest('.faq-item');
+    const isOpen = item.classList.contains('open');
+    document.querySelectorAll('.faq-item.open').forEach(el => el.classList.remove('open'));
+    if (!isOpen) item.classList.add('open');
+  }
+  let lastScroll = 0;
+  window.addEventListener('scroll', () => {
+    const nav = document.querySelector('.navbar');
+    const current = window.scrollY;
+
+    if (current > 40) {
+      nav.style.background = 'rgba(17,18,22,0.98)';
+      nav.style.boxShadow = '0 4px 32px rgba(0,0,0,0.4)';
+    } else {
+      nav.style.background = 'rgba(28,29,33,0.95)';
+      nav.style.boxShadow = 'none';
+    }
+
+    if (current > lastScroll && current > 100) {
+      nav.style.transform = 'translateX(-50%) translateY(-120px)';
+      nav.style.opacity = '0';
+    } else {
+      nav.style.transform = 'translateX(-50%) translateY(0)';
+      nav.style.opacity = '1';
+    }
+    lastScroll = current;
+  });
+</script>
+</body>
+</html>
