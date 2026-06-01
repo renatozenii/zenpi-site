@@ -626,6 +626,13 @@
       nav.style.boxShadow = 'none';
     }
 
+    if (current > 100) {
+      nav.style.transform = 'translateX(-50%) translateY(-120px)';
+      nav.style.opacity = '0';
+    } else {
+      nav.style.transform = 'translateX(-50%) translateY(0)';
+      nav.style.opacity = '1';
+    }
     lastScroll = current;
   });
 </script>
