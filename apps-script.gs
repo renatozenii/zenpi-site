@@ -28,8 +28,20 @@ function jsonOut(data) {
     .setMimeType(ContentService.MimeType.JSON);
 }
 
+// Cria ou reutiliza a planilha automaticamente (funciona em projeto independente)
+function getSpreadsheet() {
+  const props = PropertiesService.getScriptProperties();
+  let ssId = props.getProperty('ZENPI_SHEET_ID');
+  if (ssId) {
+    try { return SpreadsheetApp.openById(ssId); } catch(e) {}
+  }
+  const ss = SpreadsheetApp.create('ZenPi Analytics');
+  props.setProperty('ZENPI_SHEET_ID', ss.getId());
+  return ss;
+}
+
 function getSheet(name) {
-  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const ss = getSpreadsheet();
   let sheet = ss.getSheetByName(name);
   if (!sheet) {
     sheet = ss.insertSheet(name);
