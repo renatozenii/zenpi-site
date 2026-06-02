@@ -122,7 +122,7 @@
     .ticker-bar { background: var(--yellow); padding: 10px 0; overflow: hidden; white-space: nowrap; margin-top: -30px; position: relative; z-index: 1; }
     @media (max-width: 900px) { .ticker-bar { margin-top: 4px; } }
     .motivos-title-mobile { display: none; }
-    @media (max-width: 900px) { .motivos-subtitle { display: none; } #motivos { overflow: hidden; } }
+    @media (max-width: 900px) { .motivos-subtitle { display: none; } }
     @media (max-width: 900px) {
       .motivos-title-desktop { display: none; }
       .motivos-title-mobile { display: inline; }
@@ -643,7 +643,7 @@
     const motivos = document.querySelectorAll('.motivo-item');
     motivos.forEach((el, i) => {
       el.style.opacity = '1';
-      el.style.transform = 'translateX(-100vw)';
+      el.style.transform = 'translateX(-110%)';
       el.style.transition = `transform 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94) ${i * 0.12}s`;
     });
     const observer = new IntersectionObserver((entries) => {
@@ -659,7 +659,7 @@
     const formCard = document.querySelector('.motivos-form-card');
     if (formCard) {
       formCard.style.opacity = '1';
-      formCard.style.transform = 'translateX(-100vw)';
+      formCard.style.transform = 'translateX(-110%)';
       formCard.style.transition = 'transform 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
       const formObserver = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
