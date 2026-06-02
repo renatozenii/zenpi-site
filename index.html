@@ -126,6 +126,10 @@
       .motivos-subtitle { display: none; }
       .motivo-item, .motivos-form-card { transform: translateX(-110%); transition: transform 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94); }
       .motivo-item.visivel, .motivos-form-card.visivel { transform: translateX(0); }
+      body { display: flex; flex-direction: column; }
+      header { order: 0; } #home { order: 1; } .ticker-bar { order: 2; } #motivos { order: 3; }
+      .logos-section { order: 4; } #faq { order: 5; } #depoimentos { order: 6; }
+      #precos { order: 7; } #contato { order: 8; } footer { order: 9; } .whatsapp-float { order: 10; }
     }
     @media (max-width: 900px) {
       .motivos-title-desktop { display: none; }
