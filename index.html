@@ -604,7 +604,7 @@
     const isMobile = window.innerWidth <= 900;
     const parallaxDelay = isMobile ? 2500 : 1500;
     if (isMobile) {
-      setTimeout(() => cert.classList.add('cert-visible'), 900);
+      cert.classList.add('cert-visible');
     }
     setTimeout(() => {
       cert.style.animation = 'none';
@@ -644,7 +644,7 @@
     motivos.forEach((el, i) => {
       el.style.opacity = '0';
       el.style.transform = 'translateX(-60px)';
-      el.style.transition = `opacity 0.5s ease ${i * 0.15}s, transform 0.5s ease ${i * 0.15}s`;
+      el.style.transition = `opacity 1.4s ease ${i * 0.15}s, transform 1.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) ${i * 0.15}s`;
     });
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
