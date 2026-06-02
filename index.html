@@ -172,9 +172,9 @@
 
     /* LOGOS */
     .logos-section { background: transparent; padding: 40px 0; overflow: hidden; }
-    .marquee-wrapper { display: flex; gap: 100px; animation: marquee 20s linear infinite; width: max-content; align-items: center; }
+    .marquee-wrapper { display: flex; gap: 100px; animation: marquee 20s linear infinite; width: max-content; align-items: center; will-change: transform; transform: translateZ(0); }
     .marquee-wrapper img { height: 32px; width: auto; object-fit: contain; filter: brightness(0) invert(1); opacity: 0.4; }
-    @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+    @keyframes marquee { from { transform: translate3d(0,0,0); } to { transform: translate3d(-50%,0,0); } }
 
     /* PREÇOS */
     #precos { background: var(--bg-main); text-align: center; }
