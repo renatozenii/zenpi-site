@@ -639,6 +639,25 @@
     document.querySelectorAll('.faq-item.open').forEach(el => el.classList.remove('open'));
     if (!isOpen) item.classList.add('open');
   }
+  if (window.innerWidth <= 900) {
+    const motivos = document.querySelectorAll('.motivo-item');
+    motivos.forEach((el, i) => {
+      el.style.opacity = '0';
+      el.style.transform = 'translateX(-60px)';
+      el.style.transition = `opacity 0.5s ease ${i * 0.15}s, transform 0.5s ease ${i * 0.15}s`;
+    });
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.style.opacity = '1';
+          entry.target.style.transform = 'translateX(0)';
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15 });
+    motivos.forEach(el => observer.observe(el));
+  }
+
   let lastScroll = 0;
   window.addEventListener('scroll', () => {
     const nav = document.querySelector('.navbar');
