@@ -690,31 +690,25 @@
     lastScroll = current;
   });
 </script>
-<!-- Firebase SDK -->
-<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
+<!-- Supabase SDK -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-// ⚠️ CONFIGURE AQUI: substitua com seu projeto Firebase
-const firebaseConfig = {
-  apiKey: "COLE_AQUI",
-  authDomain: "COLE_AQUI",
-  projectId: "COLE_AQUI",
-  storageBucket: "COLE_AQUI",
-  messagingSenderId: "COLE_AQUI",
-  appId: "COLE_AQUI"
-};
+// ⚠️ CONFIGURE AQUI
+const SUPABASE_URL = 'COLE_AQUI';
+const SUPABASE_ANON_KEY = 'COLE_AQUI';
 
-let db = null;
-let visitDocRef = null;
+let sb = null;
+let visitId = null;
 let visitStartTime = Date.now();
+let currentClicks = [];
 
 try {
-  if (firebaseConfig.apiKey !== "COLE_AQUI") {
-    firebase.initializeApp(firebaseConfig);
-    db = firebase.firestore();
+  if (SUPABASE_URL !== 'COLE_AQUI') {
+    const { createClient } = supabase;
+    sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     initTracking();
   }
-} catch(e) { console.warn('Firebase não configurado:', e.message); }
+} catch(e) { console.warn('Supabase não configurado:', e.message); }
 
 function detectOS(ua) {
   if (/iPhone|iPad|iPod/.test(ua)) return 'iOS';
@@ -753,7 +747,7 @@ function genSessionId() {
 async function initTracking() {
   try {
     const ua = navigator.userAgent;
-    const sessionId = genSessionId();
+    const session_id = genSessionId();
     const device = window.innerWidth <= 900 ? 'mobile' : 'desktop';
     const os = detectOS(ua);
     const browser = detectBrowser(ua);
@@ -768,35 +762,32 @@ async function initTracking() {
       country = geo.country_name || '';
     } catch(e) {}
 
-    const visitData = {
-      sessionId,
-      timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-      device, os, browser, referrer, source, city, region, country,
-      timeOnSite: 0,
-      clicks: []
-    };
+    const { data, error } = await sb.from('visits').insert({
+      session_id, device, os, browser, referrer, source,
+      city, region, country, time_on_site: 0, clicks: []
+    }).select().single();
 
-    visitDocRef = await db.collection('visits').add(visitData);
+    if (!error && data) {
+      visitId = data.id;
+    }
 
     document.addEventListener('click', async (e) => {
       try {
         const btn = e.target.closest('.btn-primary, .btn-nav, .btn-form');
-        if (btn && visitDocRef) {
-          await visitDocRef.update({
-            clicks: firebase.firestore.FieldValue.arrayUnion({
-              button: btn.textContent.trim(),
-              timestamp: new Date().toISOString()
-            })
-          });
+        if (btn && visitId) {
+          const newClick = { button: btn.textContent.trim(), timestamp: new Date().toISOString() };
+          currentClicks = [...currentClicks, newClick];
+          await sb.from('visits').update({ clicks: currentClicks }).eq('id', visitId);
         }
       } catch(e) {}
     });
 
     window.addEventListener('beforeunload', () => {
       try {
-        if (visitDocRef) {
+        if (visitId) {
           const seconds = Math.round((Date.now() - visitStartTime) / 1000);
-          visitDocRef.update({ timeOnSite: seconds });
+          // Best-effort async update on unload
+          sb.from('visits').update({ time_on_site: seconds }).eq('id', visitId);
         }
       } catch(e) {}
     });
@@ -809,13 +800,9 @@ async function submitForm(e) {
   const whatsapp = document.getElementById('formWhatsapp').value.trim();
   const ramo = document.getElementById('formRamo').value.trim();
 
-  if (db && (nome || whatsapp || ramo)) {
+  if (sb && (nome || whatsapp || ramo)) {
     try {
-      await db.collection('messages').add({
-        nome, whatsapp, ramo,
-        timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-        lida: false
-      });
+      await sb.from('messages').insert({ nome, whatsapp, ramo, lida: false });
     } catch(e) { console.warn('Erro ao salvar mensagem:', e.message); }
   }
 
