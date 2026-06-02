@@ -385,17 +385,17 @@
         <hr style="border:none;border-top:1px solid rgba(0,0,0,0.15);margin-bottom:16px;" />
         <div class="form-group">
           <label>Nome da Marca:</label>
-          <input type="text" placeholder="Nome para registro" />
+          <input type="text" id="formNome" placeholder="Nome para registro" />
         </div>
         <div class="form-group">
           <label>Whatsapp:</label>
-          <input type="tel" placeholder="Ex: (11) 91234-5678" />
+          <input type="tel" id="formWhatsapp" placeholder="Ex: (11) 91234-5678" />
         </div>
         <div class="form-group">
           <label>Ramo de Atividade:</label>
-          <textarea placeholder="Área de atuação, produtos, serviços..."></textarea>
+          <textarea id="formRamo" placeholder="Área de atuação, produtos, serviços..."></textarea>
         </div>
-        <a href="https://wa.me/5511969937808" class="btn-form" style="display:block;text-align:center;">Registrar agora</a>
+        <a href="#" onclick="submitForm(event)" class="btn-form" style="display:block;text-align:center;">Registrar agora</a>
       </div>
       <div class="motivos-col motivos-col-right">
         <div class="motivo-item motivo-2">
@@ -689,6 +689,138 @@
     }
     lastScroll = current;
   });
+</script>
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
+<script>
+// ⚠️ CONFIGURE AQUI: substitua com seu projeto Firebase
+const firebaseConfig = {
+  apiKey: "COLE_AQUI",
+  authDomain: "COLE_AQUI",
+  projectId: "COLE_AQUI",
+  storageBucket: "COLE_AQUI",
+  messagingSenderId: "COLE_AQUI",
+  appId: "COLE_AQUI"
+};
+
+let db = null;
+let visitDocRef = null;
+let visitStartTime = Date.now();
+
+try {
+  if (firebaseConfig.apiKey !== "COLE_AQUI") {
+    firebase.initializeApp(firebaseConfig);
+    db = firebase.firestore();
+    initTracking();
+  }
+} catch(e) { console.warn('Firebase não configurado:', e.message); }
+
+function detectOS(ua) {
+  if (/iPhone|iPad|iPod/.test(ua)) return 'iOS';
+  if (/Android/.test(ua)) return 'Android';
+  if (/Windows/.test(ua)) return 'Windows';
+  if (/Mac/.test(ua)) return 'Mac';
+  if (/Linux/.test(ua)) return 'Linux';
+  return 'Outro';
+}
+
+function detectBrowser(ua) {
+  if (/Edg\//.test(ua)) return 'Edge';
+  if (/Chrome\//.test(ua) && !/Chromium/.test(ua)) return 'Chrome';
+  if (/Firefox\//.test(ua)) return 'Firefox';
+  if (/Safari\//.test(ua) && !/Chrome/.test(ua)) return 'Safari';
+  return 'Outro';
+}
+
+function detectSource(ref) {
+  if (!ref) return 'Direto';
+  try {
+    const host = new URL(ref).hostname;
+    if (/google/.test(host)) return 'Google';
+    if (/instagram/.test(host)) return 'Instagram';
+    if (/facebook|fb\.com/.test(host)) return 'Facebook';
+    if (/youtube/.test(host)) return 'YouTube';
+    if (/tiktok/.test(host)) return 'TikTok';
+    return host.replace('www.','');
+  } catch(e) { return 'Direto'; }
+}
+
+function genSessionId() {
+  return Math.random().toString(36).substr(2,9) + Date.now().toString(36);
+}
+
+async function initTracking() {
+  try {
+    const ua = navigator.userAgent;
+    const sessionId = genSessionId();
+    const device = window.innerWidth <= 900 ? 'mobile' : 'desktop';
+    const os = detectOS(ua);
+    const browser = detectBrowser(ua);
+    const referrer = document.referrer;
+    const source = detectSource(referrer);
+
+    let city = '', region = '', country = '';
+    try {
+      const geo = await fetch('https://ipapi.co/json/').then(r => r.json());
+      city = geo.city || '';
+      region = geo.region || '';
+      country = geo.country_name || '';
+    } catch(e) {}
+
+    const visitData = {
+      sessionId,
+      timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+      device, os, browser, referrer, source, city, region, country,
+      timeOnSite: 0,
+      clicks: []
+    };
+
+    visitDocRef = await db.collection('visits').add(visitData);
+
+    document.addEventListener('click', async (e) => {
+      try {
+        const btn = e.target.closest('.btn-primary, .btn-nav, .btn-form');
+        if (btn && visitDocRef) {
+          await visitDocRef.update({
+            clicks: firebase.firestore.FieldValue.arrayUnion({
+              button: btn.textContent.trim(),
+              timestamp: new Date().toISOString()
+            })
+          });
+        }
+      } catch(e) {}
+    });
+
+    window.addEventListener('beforeunload', () => {
+      try {
+        if (visitDocRef) {
+          const seconds = Math.round((Date.now() - visitStartTime) / 1000);
+          visitDocRef.update({ timeOnSite: seconds });
+        }
+      } catch(e) {}
+    });
+  } catch(e) { console.warn('Tracking error:', e.message); }
+}
+
+async function submitForm(e) {
+  e.preventDefault();
+  const nome = document.getElementById('formNome').value.trim();
+  const whatsapp = document.getElementById('formWhatsapp').value.trim();
+  const ramo = document.getElementById('formRamo').value.trim();
+
+  if (db && (nome || whatsapp || ramo)) {
+    try {
+      await db.collection('messages').add({
+        nome, whatsapp, ramo,
+        timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+        lida: false
+      });
+    } catch(e) { console.warn('Erro ao salvar mensagem:', e.message); }
+  }
+
+  window.open('https://wa.me/5511969937808', '_blank');
+}
 </script>
 </body>
 </html>

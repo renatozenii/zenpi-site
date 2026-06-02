@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ZenPi Dev – Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #1c1d21;
+      --card: #23242a;
+      --card2: #2b2c33;
+      --yellow: #fbc643;
+      --yellow-dark: #e5a800;
+      --white: #f5f5f5;
+      --gray: #bababa;
+      --gray2: #7a7a7a;
+      --radius: 16px;
+    }
+    html, body { height: 100%; }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--white); overflow-x: hidden; }
+    a { text-decoration: none; color: inherit; }
+
+    /* ── LOGIN ── */
+    #loginScreen {
+      min-height: 100vh; display: flex; align-items: center; justify-content: center;
+      background: var(--bg);
+      background-image:
+        radial-gradient(ellipse 60% 50% at 10% 20%, rgba(251,198,67,0.05) 0%, transparent 60%),
+        radial-gradient(ellipse 40% 40% at 85% 75%, rgba(251,198,67,0.03) 0%, transparent 60%);
+    }
+    .login-card {
+      background: var(--card); border-radius: var(--radius);
+      border: 1px solid rgba(255,255,255,0.07);
+      padding: 48px 40px; width: 100%; max-width: 400px;
+      box-shadow: 0 16px 64px rgba(0,0,0,0.5);
+    }
+    .login-logo {
+      text-align: center; margin-bottom: 32px;
+    }
+    .login-logo .logo-text {
+      font-size: 2rem; font-weight: 700; color: var(--yellow); letter-spacing: -1px;
+    }
+    .login-logo .logo-sub {
+      font-size: 13px; color: var(--gray2); margin-top: 4px; letter-spacing: 1px; text-transform: uppercase;
+    }
+    .login-field { margin-bottom: 16px; }
+    .login-field label { display: block; font-size: 13px; color: var(--gray); margin-bottom: 6px; }
+    .login-field input {
+      width: 100%; padding: 12px 16px; background: #1c1d21;
+      border: 1px solid rgba(255,255,255,0.1); border-radius: 10px;
+      color: var(--white); font-family: 'Inter', sans-serif; font-size: 14px;
+      outline: none; transition: border-color 0.2s;
+    }
+    .login-field input:focus { border-color: var(--yellow); }
+    .login-btn {
+      width: 100%; padding: 13px; background: var(--yellow); color: #111;
+      border: none; border-radius: 10px; font-family: 'Inter', sans-serif;
+      font-size: 15px; font-weight: 600; cursor: pointer; margin-top: 8px;
+      transition: background 0.2s, transform 0.15s;
+    }
+    .login-btn:hover { background: var(--yellow-dark); transform: translateY(-1px); }
+    .login-error {
+      background: rgba(220,50,50,0.12); border: 1px solid rgba(220,50,50,0.3);
+      color: #ff6b6b; border-radius: 8px; padding: 10px 14px;
+      font-size: 13px; margin-top: 12px; display: none;
+    }
+
+    /* ── DASHBOARD ── */
+    #dashboard { display: none; flex-direction: column; min-height: 100vh; }
+
+    /* Header */
+    .dash-header {
+      background: var(--card); border-bottom: 1px solid rgba(255,255,255,0.07);
+      padding: 0 28px; height: 64px; display: flex; align-items: center;
+      justify-content: space-between; position: sticky; top: 0; z-index: 100;
+    }
+    .dash-logo { font-size: 1.3rem; font-weight: 700; color: var(--yellow); letter-spacing: -0.5px; }
+    .dash-logo span { color: var(--white); font-weight: 300; }
+    .logout-btn {
+      background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.1);
+      color: var(--gray); font-family: 'Inter', sans-serif; font-size: 13px;
+      padding: 8px 18px; border-radius: 8px; cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+    }
+    .logout-btn:hover { background: rgba(255,255,255,0.12); color: var(--white); }
+
+    /* Main area */
+    .dash-main { flex: 1; padding: 28px; max-width: 1400px; width: 100%; margin: 0 auto; }
+
+    /* Date filter */
+    .filter-bar {
+      background: var(--card); border-radius: var(--radius);
+      border: 1px solid rgba(255,255,255,0.07);
+      padding: 16px 20px; display: flex; align-items: center;
+      flex-wrap: wrap; gap: 10px; margin-bottom: 24px;
+    }
+    .filter-btns { display: flex; gap: 6px; flex-wrap: wrap; }
+    .filter-btn {
+      background: transparent; border: 1px solid rgba(255,255,255,0.1);
+      color: var(--gray); font-family: 'Inter', sans-serif; font-size: 13px;
+      padding: 7px 16px; border-radius: 8px; cursor: pointer;
+      transition: all 0.2s;
+    }
+    .filter-btn:hover { border-color: var(--yellow); color: var(--yellow); }
+    .filter-btn.active {
+      background: var(--yellow); color: #111; border-color: var(--yellow); font-weight: 600;
+    }
+    .filter-sep { width: 1px; height: 28px; background: rgba(255,255,255,0.1); margin: 0 6px; }
+    .filter-dates { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .filter-dates label { font-size: 13px; color: var(--gray2); }
+    .filter-dates input[type=date] {
+      background: #1c1d21; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px;
+      color: var(--white); font-family: 'Inter', sans-serif; font-size: 13px;
+      padding: 7px 12px; outline: none; cursor: pointer;
+      transition: border-color 0.2s;
+    }
+    .filter-dates input[type=date]:focus { border-color: var(--yellow); }
+    .apply-btn {
+      background: var(--yellow); color: #111; border: none; border-radius: 8px;
+      font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 600;
+      padding: 7px 16px; cursor: pointer; transition: background 0.2s;
+    }
+    .apply-btn:hover { background: var(--yellow-dark); }
+
+    /* Stats row */
+    .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
+    .stat-card {
+      background: var(--card); border-radius: var(--radius);
+      border: 1px solid rgba(255,255,255,0.07);
+      padding: 22px 24px;
+    }
+    .stat-label { font-size: 12px; color: var(--gray2); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; }
+    .stat-value { font-size: 2rem; font-weight: 700; color: var(--white); line-height: 1; }
+    .stat-sub { font-size: 13px; color: var(--gray2); margin-top: 6px; }
+    .stat-accent { color: var(--yellow); }
+
+    /* Tabs */
+    .tabs-bar {
+      display: flex; gap: 2px; margin-bottom: 0;
+    }
+    .tab-btn {
+      background: var(--card); border: 1px solid rgba(255,255,255,0.07);
+      border-bottom: none; color: var(--gray); font-family: 'Inter', sans-serif;
+      font-size: 14px; font-weight: 500; padding: 12px 28px;
+      border-radius: 12px 12px 0 0; cursor: pointer;
+      transition: all 0.2s;
+    }
+    .tab-btn.active { background: var(--card2); color: var(--yellow); border-color: rgba(251,198,67,0.2); }
+    .tab-btn:hover:not(.active) { color: var(--white); }
+
+    /* Tab panels */
+    .tab-panel {
+      background: var(--card2); border-radius: 0 var(--radius) var(--radius) var(--radius);
+      border: 1px solid rgba(255,255,255,0.07);
+      padding: 0; display: none; overflow: hidden;
+    }
+    .tab-panel.active { display: block; }
+
+    /* Table */
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    thead { background: rgba(0,0,0,0.2); }
+    th {
+      padding: 14px 16px; text-align: left; color: var(--gray2);
+      font-size: 11px; text-transform: uppercase; letter-spacing: 1px;
+      cursor: pointer; user-select: none; white-space: nowrap;
+      transition: color 0.2s;
+    }
+    th:hover { color: var(--yellow); }
+    th .sort-arrow { margin-left: 4px; opacity: 0.5; }
+    th.sorted .sort-arrow { opacity: 1; color: var(--yellow); }
+    td { padding: 13px 16px; border-top: 1px solid rgba(255,255,255,0.05); color: var(--gray); white-space: nowrap; }
+    tr:hover td { background: rgba(255,255,255,0.03); }
+    .badge-device {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 600;
+    }
+    .badge-mobile { background: rgba(251,198,67,0.12); color: var(--yellow); }
+    .badge-desktop { background: rgba(100,180,255,0.12); color: #64b4ff; }
+    .empty-state {
+      padding: 60px 20px; text-align: center; color: var(--gray2);
+    }
+    .empty-state p { font-size: 15px; }
+    .loading-state { padding: 48px 20px; text-align: center; color: var(--gray2); font-size: 14px; }
+
+    /* Messages tab */
+    .messages-grid { padding: 20px; display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; }
+    .msg-card {
+      background: var(--card); border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.07);
+      padding: 20px; position: relative;
+      transition: border-color 0.2s;
+    }
+    .msg-card:hover { border-color: rgba(251,198,67,0.2); }
+    .msg-card.unread { border-color: rgba(251,198,67,0.25); }
+    .badge-nova {
+      position: absolute; top: 14px; right: 14px;
+      background: var(--yellow); color: #111; font-size: 10px; font-weight: 700;
+      padding: 3px 9px; border-radius: 20px; letter-spacing: 0.5px;
+    }
+    .msg-nome { font-size: 16px; font-weight: 600; color: var(--white); margin-bottom: 8px; }
+    .msg-field { display: flex; gap: 8px; align-items: flex-start; margin-bottom: 6px; }
+    .msg-field-label { font-size: 11px; color: var(--gray2); text-transform: uppercase; letter-spacing: 0.5px; min-width: 70px; padding-top: 2px; }
+    .msg-field-value { font-size: 13px; color: var(--gray); }
+    .msg-date { font-size: 11px; color: var(--gray2); margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.07); }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .stats-row { grid-template-columns: 1fr 1fr; }
+      .dash-main { padding: 16px; }
+      .filter-bar { flex-direction: column; align-items: flex-start; }
+    }
+    @media (max-width: 600px) {
+      .stats-row { grid-template-columns: 1fr; }
+      .tab-btn { padding: 10px 16px; font-size: 13px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── LOGIN SCREEN ── -->
+<div id="loginScreen">
+  <div class="login-card">
+    <div class="login-logo">
+      <div class="logo-text">ZenPi</div>
+      <div class="logo-sub">Painel de Analytics</div>
+    </div>
+    <div class="login-field">
+      <label>E-mail</label>
+      <input type="email" id="loginEmail" placeholder="seu@email.com" autocomplete="username" />
+    </div>
+    <div class="login-field">
+      <label>Senha</label>
+      <input type="password" id="loginPass" placeholder="••••••••" autocomplete="current-password"
+             onkeydown="if(event.key==='Enter') doLogin()" />
+    </div>
+    <button class="login-btn" onclick="doLogin()">Entrar</button>
+    <div class="login-error" id="loginError">E-mail ou senha incorretos.</div>
+  </div>
+</div>
+
+<!-- ── DASHBOARD ── -->
+<div id="dashboard">
+  <header class="dash-header">
+    <div class="dash-logo">ZenPi <span>Dev</span></div>
+    <button class="logout-btn" onclick="doLogout()">Sair</button>
+  </header>
+
+  <div class="dash-main">
+
+    <!-- Date filter -->
+    <div class="filter-bar">
+      <div class="filter-btns" id="filterBtns">
+        <button class="filter-btn active" onclick="setFilter('today',this)">Hoje</button>
+        <button class="filter-btn" onclick="setFilter('yesterday',this)">Ontem</button>
+        <button class="filter-btn" onclick="setFilter('7days',this)">7 Dias</button>
+        <button class="filter-btn" onclick="setFilter('month',this)">Mês</button>
+        <button class="filter-btn" onclick="setFilter('all',this)">Todo Período</button>
+      </div>
+      <div class="filter-sep"></div>
+      <div class="filter-dates">
+        <label>De:</label>
+        <input type="date" id="dateFrom" />
+        <label>Até:</label>
+        <input type="date" id="dateTo" />
+        <button class="apply-btn" onclick="applyCustomRange()">Aplicar</button>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-label">Total Visitas</div>
+        <div class="stat-value" id="statTotal">–</div>
+        <div class="stat-sub">no período</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Mobile</div>
+        <div class="stat-value" id="statMobile">–</div>
+        <div class="stat-sub" id="statMobilePct">–</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Desktop</div>
+        <div class="stat-value" id="statDesktop">–</div>
+        <div class="stat-sub" id="statDesktopPct">–</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Fonte Principal</div>
+        <div class="stat-value stat-accent" id="statSource" style="font-size:1.4rem;">–</div>
+        <div class="stat-sub" id="statSourceCount">–</div>
+      </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="tabs-bar">
+      <button class="tab-btn active" onclick="switchTab('analytics',this)">Analytics</button>
+      <button class="tab-btn" onclick="switchTab('mensagens',this)">
+        Mensagens <span id="msgBadge" style="display:none;background:var(--yellow);color:#111;font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px;margin-left:6px;"></span>
+      </button>
+    </div>
+
+    <!-- Analytics Panel -->
+    <div class="tab-panel active" id="panelAnalytics">
+      <div class="table-wrap">
+        <div class="loading-state" id="visitsLoading">Carregando dados...</div>
+        <table id="visitsTable" style="display:none;">
+          <thead>
+            <tr>
+              <th onclick="sortTable('timestamp')" data-col="timestamp">Data/Hora <span class="sort-arrow">↕</span></th>
+              <th onclick="sortTable('city')" data-col="city">Cidade <span class="sort-arrow">↕</span></th>
+              <th onclick="sortTable('region')" data-col="region">Região <span class="sort-arrow">↕</span></th>
+              <th onclick="sortTable('country')" data-col="country">País <span class="sort-arrow">↕</span></th>
+              <th onclick="sortTable('device')" data-col="device">Dispositivo <span class="sort-arrow">↕</span></th>
+              <th onclick="sortTable('os')" data-col="os">OS <span class="sort-arrow">↕</span></th>
+              <th onclick="sortTable('browser')" data-col="browser">Navegador <span class="sort-arrow">↕</span></th>
+              <th onclick="sortTable('source')" data-col="source">Fonte <span class="sort-arrow">↕</span></th>
+              <th onclick="sortTable('timeOnSite')" data-col="timeOnSite">Tempo <span class="sort-arrow">↕</span></th>
+              <th>Cliques</th>
+            </tr>
+          </thead>
+          <tbody id="visitsBody"></tbody>
+        </table>
+        <div class="empty-state" id="visitsEmpty" style="display:none;"><p>Nenhuma visita no período selecionado.</p></div>
+      </div>
+    </div>
+
+    <!-- Messages Panel -->
+    <div class="tab-panel" id="panelMensagens">
+      <div class="loading-state" id="msgsLoading">Carregando mensagens...</div>
+      <div class="messages-grid" id="msgsGrid" style="display:none;"></div>
+      <div class="empty-state" id="msgsEmpty" style="display:none;"><p>Nenhuma mensagem recebida ainda.</p></div>
+    </div>
+
+  </div><!-- /dash-main -->
+</div><!-- /dashboard -->
+
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
+<script>
+// ⚠️ CONFIGURE AQUI: substitua com seu projeto Firebase
+const firebaseConfig = {
+  apiKey: "COLE_AQUI",
+  authDomain: "COLE_AQUI",
+  projectId: "COLE_AQUI",
+  storageBucket: "COLE_AQUI",
+  messagingSenderId: "COLE_AQUI",
+  appId: "COLE_AQUI"
+};
+
+// ── AUTH ──────────────────────────────────────────────
+const CREDS = { email: "renatozenidesign@gmail.com", password: "97132021" };
+const SESSION_KEY = "zenpi_dev_auth";
+
+function doLogin() {
+  const email = document.getElementById('loginEmail').value.trim();
+  const pass  = document.getElementById('loginPass').value;
+  const err   = document.getElementById('loginError');
+  if (email === CREDS.email && pass === CREDS.password) {
+    sessionStorage.setItem(SESSION_KEY, '1');
+    err.style.display = 'none';
+    showDashboard();
+  } else {
+    err.style.display = 'block';
+  }
+}
+
+function doLogout() {
+  sessionStorage.removeItem(SESSION_KEY);
+  document.getElementById('dashboard').style.display = 'none';
+  document.getElementById('loginScreen').style.display = 'flex';
+}
+
+function showDashboard() {
+  document.getElementById('loginScreen').style.display = 'none';
+  document.getElementById('dashboard').style.display = 'flex';
+  initDashboard();
+}
+
+// Auto-login if session exists
+if (sessionStorage.getItem(SESSION_KEY)) {
+  document.addEventListener('DOMContentLoaded', showDashboard);
+}
+
+// ── FIREBASE ─────────────────────────────────────────
+let db = null;
+let allVisits = [];
+let allMessages = [];
+let currentFilter = 'today';
+let customFrom = null, customTo = null;
+let sortCol = 'timestamp', sortDir = -1;
+
+function initFirebase() {
+  try {
+    if (firebaseConfig.apiKey === 'COLE_AQUI') return false;
+    if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+    db = firebase.firestore();
+    return true;
+  } catch(e) { console.warn('Firebase error:', e); return false; }
+}
+
+// ── DASHBOARD INIT ───────────────────────────────────
+async function initDashboard() {
+  const ok = initFirebase();
+  if (!ok) {
+    showDemoNotice();
+    return;
+  }
+  await loadAll();
+}
+
+function showDemoNotice() {
+  document.getElementById('visitsLoading').innerHTML =
+    '<p style="color:var(--yellow);font-weight:600;">⚠️ Firebase não configurado.</p><p style="margin-top:8px;font-size:13px;">Edite o bloco <code>firebaseConfig</code> no topo do script com suas credenciais.</p>';
+  document.getElementById('msgsLoading').innerHTML =
+    '<p style="color:var(--yellow);font-weight:600;">⚠️ Firebase não configurado.</p>';
+}
+
+async function loadAll() {
+  try {
+    const [vSnap, mSnap] = await Promise.all([
+      db.collection('visits').orderBy('timestamp', 'desc').limit(2000).get(),
+      db.collection('messages').orderBy('timestamp', 'desc').get()
+    ]);
+    allVisits = vSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+    allMessages = mSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+    render();
+    renderMessages();
+  } catch(e) {
+    console.error('Load error:', e);
+    document.getElementById('visitsLoading').textContent = 'Erro ao carregar dados: ' + e.message;
+  }
+}
+
+// ── FILTERING ────────────────────────────────────────
+function getDateRange(filter) {
+  const now = new Date();
+  const start = new Date();
+  const end = new Date();
+
+  const startOfDay = d => { d.setHours(0,0,0,0); return d; };
+  const endOfDay   = d => { d.setHours(23,59,59,999); return d; };
+
+  switch(filter) {
+    case 'today':
+      return { from: startOfDay(new Date(now)), to: endOfDay(new Date(now)) };
+    case 'yesterday': {
+      const y = new Date(now); y.setDate(y.getDate()-1);
+      return { from: startOfDay(y), to: endOfDay(new Date(y)) };
+    }
+    case '7days': {
+      const s = new Date(now); s.setDate(s.getDate()-6);
+      return { from: startOfDay(s), to: endOfDay(new Date(now)) };
+    }
+    case 'month': {
+      const s = new Date(now); s.setDate(1);
+      return { from: startOfDay(s), to: endOfDay(new Date(now)) };
+    }
+    case 'all':
+      return { from: new Date(0), to: new Date(8640000000000000) };
+    case 'custom':
+      return { from: customFrom, to: customTo };
+    default:
+      return { from: new Date(0), to: new Date(8640000000000000) };
+  }
+}
+
+function filterVisits() {
+  const { from, to } = getDateRange(currentFilter);
+  return allVisits.filter(v => {
+    const ts = v.timestamp?.toDate ? v.timestamp.toDate() : new Date(v.timestamp || 0);
+    return ts >= from && ts <= to;
+  });
+}
+
+// ── RENDER ANALYTICS ─────────────────────────────────
+function render() {
+  const data = filterVisits();
+  updateStats(data);
+  renderTable(data);
+}
+
+function updateStats(data) {
+  const total   = data.length;
+  const mobile  = data.filter(v => v.device === 'mobile').length;
+  const desktop = data.filter(v => v.device === 'desktop').length;
+
+  // Count sources
+  const srcMap = {};
+  data.forEach(v => { const s = v.source || 'Direto'; srcMap[s] = (srcMap[s]||0)+1; });
+  const topSrc = Object.entries(srcMap).sort((a,b)=>b[1]-a[1])[0];
+
+  document.getElementById('statTotal').textContent = total;
+  document.getElementById('statMobile').textContent = mobile;
+  document.getElementById('statMobilePct').textContent = total ? Math.round(mobile/total*100)+'%' : '–';
+  document.getElementById('statDesktop').textContent = desktop;
+  document.getElementById('statDesktopPct').textContent = total ? Math.round(desktop/total*100)+'%' : '–';
+  document.getElementById('statSource').textContent = topSrc ? topSrc[0] : '–';
+  document.getElementById('statSourceCount').textContent = topSrc ? topSrc[1] + ' visitas' : '–';
+}
+
+function formatDate(ts) {
+  if (!ts) return '–';
+  const d = ts.toDate ? ts.toDate() : new Date(ts);
+  return d.toLocaleDateString('pt-BR') + ' ' + d.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+}
+
+function formatTime(secs) {
+  if (!secs) return '–';
+  if (secs < 60) return secs + 's';
+  return Math.floor(secs/60) + 'm ' + (secs%60) + 's';
+}
+
+let sortedData = [];
+
+function sortData(data) {
+  return [...data].sort((a,b) => {
+    let va = a[sortCol], vb = b[sortCol];
+    if (sortCol === 'timestamp') {
+      va = va?.toDate ? va.toDate().getTime() : new Date(va||0).getTime();
+      vb = vb?.toDate ? vb.toDate().getTime() : new Date(vb||0).getTime();
+      return sortDir * (va - vb);
+    }
+    if (sortCol === 'timeOnSite') {
+      va = Number(va)||0; vb = Number(vb)||0;
+      return sortDir * (va - vb);
+    }
+    va = (va||'').toString().toLowerCase();
+    vb = (vb||'').toString().toLowerCase();
+    return sortDir * va.localeCompare(vb);
+  });
+}
+
+function sortTable(col) {
+  if (sortCol === col) { sortDir *= -1; } else { sortCol = col; sortDir = -1; }
+  document.querySelectorAll('th[data-col]').forEach(th => th.classList.remove('sorted'));
+  const th = document.querySelector(`th[data-col="${col}"]`);
+  if (th) {
+    th.classList.add('sorted');
+    th.querySelector('.sort-arrow').textContent = sortDir === -1 ? '↓' : '↑';
+  }
+  renderTable(filterVisits());
+}
+
+function renderTable(data) {
+  const loading = document.getElementById('visitsLoading');
+  const table   = document.getElementById('visitsTable');
+  const empty   = document.getElementById('visitsEmpty');
+  const tbody   = document.getElementById('visitsBody');
+
+  loading.style.display = 'none';
+
+  if (!data.length) {
+    table.style.display = 'none';
+    empty.style.display = 'block';
+    return;
+  }
+  empty.style.display = 'none';
+  table.style.display = 'table';
+
+  sortedData = sortData(data);
+  tbody.innerHTML = sortedData.map(v => {
+    const ts = formatDate(v.timestamp);
+    const deviceBadge = v.device === 'mobile'
+      ? '<span class="badge-device badge-mobile">📱 Mobile</span>'
+      : '<span class="badge-device badge-desktop">🖥 Desktop</span>';
+    const clicks = Array.isArray(v.clicks) ? v.clicks.length : 0;
+    return `<tr>
+      <td>${ts}</td>
+      <td>${v.city||'–'}</td>
+      <td>${v.region||'–'}</td>
+      <td>${v.country||'–'}</td>
+      <td>${deviceBadge}</td>
+      <td>${v.os||'–'}</td>
+      <td>${v.browser||'–'}</td>
+      <td>${v.source||'–'}</td>
+      <td>${formatTime(v.timeOnSite)}</td>
+      <td>${clicks}</td>
+    </tr>`;
+  }).join('');
+}
+
+// ── RENDER MESSAGES ───────────────────────────────────
+function renderMessages() {
+  const grid    = document.getElementById('msgsGrid');
+  const loading = document.getElementById('msgsLoading');
+  const empty   = document.getElementById('msgsEmpty');
+  const badge   = document.getElementById('msgBadge');
+
+  loading.style.display = 'none';
+
+  const unread = allMessages.filter(m => !m.lida).length;
+  if (unread > 0) {
+    badge.textContent = unread;
+    badge.style.display = 'inline';
+  }
+
+  if (!allMessages.length) {
+    grid.style.display = 'none';
+    empty.style.display = 'block';
+    return;
+  }
+  empty.style.display = 'none';
+  grid.style.display = 'grid';
+
+  grid.innerHTML = allMessages.map(m => {
+    const ts = formatDate(m.timestamp);
+    const isNew = !m.lida;
+    return `<div class="msg-card ${isNew?'unread':''}">
+      ${isNew ? '<span class="badge-nova">Nova</span>' : ''}
+      <div class="msg-nome">${esc(m.nome||'–')}</div>
+      <div class="msg-field">
+        <span class="msg-field-label">WhatsApp</span>
+        <span class="msg-field-value">${esc(m.whatsapp||'–')}</span>
+      </div>
+      <div class="msg-field">
+        <span class="msg-field-label">Ramo</span>
+        <span class="msg-field-value">${esc(m.ramo||'–')}</span>
+      </div>
+      <div class="msg-date">${ts}</div>
+    </div>`;
+  }).join('');
+}
+
+function esc(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+// ── FILTER CONTROLS ───────────────────────────────────
+function setFilter(filter, btn) {
+  currentFilter = filter;
+  customFrom = null; customTo = null;
+  document.querySelectorAll('#filterBtns .filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  if (allVisits.length || db) render();
+}
+
+function applyCustomRange() {
+  const from = document.getElementById('dateFrom').value;
+  const to   = document.getElementById('dateTo').value;
+  if (!from && !to) return;
+  customFrom = from ? new Date(from + 'T00:00:00') : new Date(0);
+  customTo   = to   ? new Date(to   + 'T23:59:59') : new Date(8640000000000000);
+  currentFilter = 'custom';
+  document.querySelectorAll('#filterBtns .filter-btn').forEach(b => b.classList.remove('active'));
+  if (allVisits.length || db) render();
+}
+
+// ── TABS ──────────────────────────────────────────────
+function switchTab(name, btn) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('panel' + name.charAt(0).toUpperCase() + name.slice(1)).classList.add('active');
+}
+</script>
+</body>
+</html>
