@@ -697,7 +697,7 @@
   wrapper.innerHTML += wrapper.innerHTML;
   const totalWidth = wrapper.scrollWidth / 2;
   let pos = 0;
-  const speed = 0.5; // px por frame
+  const speed = 1.2; // px por frame
   function step() {
     pos -= speed;
     if (pos <= -totalWidth) pos = 0;
