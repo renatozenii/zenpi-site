@@ -310,7 +310,7 @@
         <table id="visitsTable" style="display:none;">
           <thead>
             <tr>
-              <th onclick="sortTable('timestamp')" data-col="timestamp">Data/Hora <span class="sort-arrow">↕</span></th>
+              <th onclick="sortTable('created_at')" data-col="created_at">Data/Hora <span class="sort-arrow">↕</span></th>
               <th onclick="sortTable('city')" data-col="city">Cidade <span class="sort-arrow">↕</span></th>
               <th onclick="sortTable('region')" data-col="region">Região <span class="sort-arrow">↕</span></th>
               <th onclick="sortTable('country')" data-col="country">País <span class="sort-arrow">↕</span></th>
@@ -318,7 +318,7 @@
               <th onclick="sortTable('os')" data-col="os">OS <span class="sort-arrow">↕</span></th>
               <th onclick="sortTable('browser')" data-col="browser">Navegador <span class="sort-arrow">↕</span></th>
               <th onclick="sortTable('source')" data-col="source">Fonte <span class="sort-arrow">↕</span></th>
-              <th onclick="sortTable('timeOnSite')" data-col="timeOnSite">Tempo <span class="sort-arrow">↕</span></th>
+              <th onclick="sortTable('time_on_site')" data-col="time_on_site">Tempo <span class="sort-arrow">↕</span></th>
               <th>Cliques</th>
             </tr>
           </thead>
@@ -338,19 +338,24 @@
   </div><!-- /dash-main -->
 </div><!-- /dashboard -->
 
-<!-- Firebase SDK -->
-<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
+<!-- Supabase SDK -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-// ⚠️ CONFIGURE AQUI: substitua com seu projeto Firebase
-const firebaseConfig = {
-  apiKey: "COLE_AQUI",
-  authDomain: "COLE_AQUI",
-  projectId: "COLE_AQUI",
-  storageBucket: "COLE_AQUI",
-  messagingSenderId: "COLE_AQUI",
-  appId: "COLE_AQUI"
-};
+/*
+  ── SUPABASE SETUP ─────────────────────────────────────────────────────────
+  Run this in Supabase SQL Editor:
+
+  CREATE TABLE visits (id bigserial primary key, session_id text, created_at timestamptz default now(), device text, os text, browser text, referrer text, source text, city text, region text, country text, time_on_site int4 default 0, clicks jsonb default '[]');
+  CREATE TABLE messages (id bigserial primary key, created_at timestamptz default now(), nome text, whatsapp text, ramo text, lida bool default false);
+  ALTER TABLE visits ENABLE ROW LEVEL SECURITY;
+  ALTER TABLE messages ENABLE ROW LEVEL SECURITY;
+  CREATE POLICY "allow all" ON visits FOR ALL USING (true) WITH CHECK (true);
+  CREATE POLICY "allow all" ON messages FOR ALL USING (true) WITH CHECK (true);
+*/
+
+// ⚠️ CONFIGURE AQUI
+const SUPABASE_URL = 'COLE_AQUI';
+const SUPABASE_ANON_KEY = 'COLE_AQUI';
 
 // ── AUTH ──────────────────────────────────────────────
 const CREDS = { email: "renatozenidesign@gmail.com", password: "97132021" };
@@ -386,26 +391,26 @@ if (sessionStorage.getItem(SESSION_KEY)) {
   document.addEventListener('DOMContentLoaded', showDashboard);
 }
 
-// ── FIREBASE ─────────────────────────────────────────
-let db = null;
+// ── SUPABASE ──────────────────────────────────────────
+let sb = null;
 let allVisits = [];
 let allMessages = [];
 let currentFilter = 'today';
 let customFrom = null, customTo = null;
-let sortCol = 'timestamp', sortDir = -1;
+let sortCol = 'created_at', sortDir = -1;
 
-function initFirebase() {
+function initSupabase() {
   try {
-    if (firebaseConfig.apiKey === 'COLE_AQUI') return false;
-    if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
-    db = firebase.firestore();
+    if (SUPABASE_URL === 'COLE_AQUI') return false;
+    const { createClient } = supabase;
+    sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     return true;
-  } catch(e) { console.warn('Firebase error:', e); return false; }
+  } catch(e) { console.warn('Supabase error:', e); return false; }
 }
 
 // ── DASHBOARD INIT ───────────────────────────────────
 async function initDashboard() {
-  const ok = initFirebase();
+  const ok = initSupabase();
   if (!ok) {
     showDemoNotice();
     return;
@@ -415,19 +420,21 @@ async function initDashboard() {
 
 function showDemoNotice() {
   document.getElementById('visitsLoading').innerHTML =
-    '<p style="color:var(--yellow);font-weight:600;">⚠️ Firebase não configurado.</p><p style="margin-top:8px;font-size:13px;">Edite o bloco <code>firebaseConfig</code> no topo do script com suas credenciais.</p>';
+    '<p style="color:var(--yellow);font-weight:600;">⚠️ Supabase não configurado.</p><p style="margin-top:8px;font-size:13px;">Edite as constantes <code>SUPABASE_URL</code> e <code>SUPABASE_ANON_KEY</code> no topo do script com suas credenciais.</p>';
   document.getElementById('msgsLoading').innerHTML =
-    '<p style="color:var(--yellow);font-weight:600;">⚠️ Firebase não configurado.</p>';
+    '<p style="color:var(--yellow);font-weight:600;">⚠️ Supabase não configurado.</p>';
 }
 
 async function loadAll() {
   try {
-    const [vSnap, mSnap] = await Promise.all([
-      db.collection('visits').orderBy('timestamp', 'desc').limit(2000).get(),
-      db.collection('messages').orderBy('timestamp', 'desc').get()
+    const [vRes, mRes] = await Promise.all([
+      sb.from('visits').select('*').order('created_at', { ascending: false }).limit(2000),
+      sb.from('messages').select('*').order('created_at', { ascending: false })
     ]);
-    allVisits = vSnap.docs.map(d => ({ id: d.id, ...d.data() }));
-    allMessages = mSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+    if (vRes.error) throw vRes.error;
+    if (mRes.error) throw mRes.error;
+    allVisits = vRes.data || [];
+    allMessages = mRes.data || [];
     render();
     renderMessages();
   } catch(e) {
@@ -472,7 +479,7 @@ function getDateRange(filter) {
 function filterVisits() {
   const { from, to } = getDateRange(currentFilter);
   return allVisits.filter(v => {
-    const ts = v.timestamp?.toDate ? v.timestamp.toDate() : new Date(v.timestamp || 0);
+    const ts = new Date(v.created_at || 0);
     return ts >= from && ts <= to;
   });
 }
@@ -505,7 +512,7 @@ function updateStats(data) {
 
 function formatDate(ts) {
   if (!ts) return '–';
-  const d = ts.toDate ? ts.toDate() : new Date(ts);
+  const d = new Date(ts);
   return d.toLocaleDateString('pt-BR') + ' ' + d.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
 }
 
@@ -520,12 +527,12 @@ let sortedData = [];
 function sortData(data) {
   return [...data].sort((a,b) => {
     let va = a[sortCol], vb = b[sortCol];
-    if (sortCol === 'timestamp') {
-      va = va?.toDate ? va.toDate().getTime() : new Date(va||0).getTime();
-      vb = vb?.toDate ? vb.toDate().getTime() : new Date(vb||0).getTime();
+    if (sortCol === 'created_at') {
+      va = new Date(va||0).getTime();
+      vb = new Date(vb||0).getTime();
       return sortDir * (va - vb);
     }
-    if (sortCol === 'timeOnSite') {
+    if (sortCol === 'time_on_site') {
       va = Number(va)||0; vb = Number(vb)||0;
       return sortDir * (va - vb);
     }
@@ -564,7 +571,7 @@ function renderTable(data) {
 
   sortedData = sortData(data);
   tbody.innerHTML = sortedData.map(v => {
-    const ts = formatDate(v.timestamp);
+    const ts = formatDate(v.created_at);
     const deviceBadge = v.device === 'mobile'
       ? '<span class="badge-device badge-mobile">📱 Mobile</span>'
       : '<span class="badge-device badge-desktop">🖥 Desktop</span>';
@@ -578,7 +585,7 @@ function renderTable(data) {
       <td>${v.os||'–'}</td>
       <td>${v.browser||'–'}</td>
       <td>${v.source||'–'}</td>
-      <td>${formatTime(v.timeOnSite)}</td>
+      <td>${formatTime(v.time_on_site)}</td>
       <td>${clicks}</td>
     </tr>`;
   }).join('');
@@ -608,10 +615,10 @@ function renderMessages() {
   grid.style.display = 'grid';
 
   grid.innerHTML = allMessages.map(m => {
-    const ts = formatDate(m.timestamp);
+    const ts = formatDate(m.created_at);
     const isNew = !m.lida;
-    return `<div class="msg-card ${isNew?'unread':''}">
-      ${isNew ? '<span class="badge-nova">Nova</span>' : ''}
+    return `<div class="msg-card ${isNew?'unread':''}" id="msg-${m.id}">
+      ${isNew ? `<span class="badge-nova" onclick="markRead(${m.id})" style="cursor:pointer;" title="Marcar como lida">Nova</span>` : ''}
       <div class="msg-nome">${esc(m.nome||'–')}</div>
       <div class="msg-field">
         <span class="msg-field-label">WhatsApp</span>
@@ -626,6 +633,15 @@ function renderMessages() {
   }).join('');
 }
 
+async function markRead(id) {
+  try {
+    await sb.from('messages').update({ lida: true }).eq('id', id);
+    const msg = allMessages.find(m => m.id === id);
+    if (msg) { msg.lida = true; }
+    renderMessages();
+  } catch(e) { console.warn('Erro ao marcar lida:', e); }
+}
+
 function esc(s) {
   return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
@@ -636,7 +652,7 @@ function setFilter(filter, btn) {
   customFrom = null; customTo = null;
   document.querySelectorAll('#filterBtns .filter-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
-  if (allVisits.length || db) render();
+  if (allVisits.length || sb) render();
 }
 
 function applyCustomRange() {
@@ -647,7 +663,7 @@ function applyCustomRange() {
   customTo   = to   ? new Date(to   + 'T23:59:59') : new Date(8640000000000000);
   currentFilter = 'custom';
   document.querySelectorAll('#filterBtns .filter-btn').forEach(b => b.classList.remove('active'));
-  if (allVisits.length || db) render();
+  if (allVisits.length || sb) render();
 }
 
 // ── TABS ──────────────────────────────────────────────
