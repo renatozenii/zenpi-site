@@ -122,11 +122,15 @@
     .ticker-bar { background: var(--yellow); padding: 10px 0; overflow: hidden; white-space: nowrap; margin-top: -30px; position: relative; z-index: 1; }
     @media (max-width: 900px) { .ticker-bar { margin-top: 4px; } }
     .motivos-title-mobile { display: none; }
+    .faq-label-mobile { display: none; }
     @media (max-width: 900px) {
       .motivos-subtitle { display: none; }
       .motivo-item, .motivos-form-card { transform: translateX(-110%); transition: transform 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94); }
       .motivo-item.visivel, .motivos-form-card.visivel { transform: translateX(0); }
       body { display: flex; flex-direction: column; }
+      .faq-label-mobile { display: block; margin-bottom: 16px; }
+      .faq-label-desktop, .faq-title-desktop, .faq-subtitle-desktop { display: none; }
+      .faq-right { display: none; }
       header { order: 0; } #home { order: 1; } .ticker-bar { order: 2; } #motivos { order: 3; }
       .logos-section { order: 4; } #faq { order: 5; } #depoimentos { order: 6; }
       #precos { order: 7; } #contato { order: 8; } footer { order: 9; } .whatsapp-float { order: 10; }
@@ -535,6 +539,7 @@
   <div class="section-inner">
     <div class="faq-wrap">
       <div class="faq-list">
+        <span class="section-label faq-label-mobile">Perguntas Frequentes</span>
         <div class="faq-item">
           <button class="faq-question" onclick="toggleFaq(this)">
             Por que devo registrar minha marca no INPI?
@@ -572,9 +577,9 @@
         </div>
       </div>
       <div class="faq-right">
-        <span class="section-label">Perguntas Frequentes</span>
-        <h2 class="section-title">Tire suas dúvidas sobre registro de marca</h2>
-        <p class="section-subtitle">Reunimos as principais informações para te ajudar a entender como funciona, por que é importante registrar sua marca e o que você precisa fazer para se proteger.</p>
+        <span class="section-label faq-label-desktop">Perguntas Frequentes</span>
+        <h2 class="section-title faq-title-desktop">Tire suas dúvidas sobre registro de marca</h2>
+        <p class="section-subtitle faq-subtitle-desktop">Reunimos as principais informações para te ajudar a entender como funciona, por que é importante registrar sua marca e o que você precisa fazer para se proteger.</p>
         <br />
         <a href="https://wa.me/5511969937808" class="btn-primary">Tirar dúvidas</a>
       </div>
