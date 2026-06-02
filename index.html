@@ -643,7 +643,7 @@
     const motivos = document.querySelectorAll('.motivo-item');
     motivos.forEach((el, i) => {
       el.style.opacity = '1';
-      el.style.transform = 'translateX(-60px)';
+      el.style.transform = 'translateX(-160px)';
       el.style.transition = `transform 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94) ${i * 0.12}s`;
     });
     const observer = new IntersectionObserver((entries) => {
@@ -659,7 +659,7 @@
     const formCard = document.querySelector('.motivos-form-card');
     if (formCard) {
       formCard.style.opacity = '1';
-      formCard.style.transform = 'translateX(-60px)';
+      formCard.style.transform = 'translateX(-160px)';
       formCard.style.transition = 'transform 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
       const formObserver = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
