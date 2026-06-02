@@ -338,24 +338,9 @@
   </div><!-- /dash-main -->
 </div><!-- /dashboard -->
 
-<!-- Supabase SDK -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-/*
-  ── SUPABASE SETUP ─────────────────────────────────────────────────────────
-  Run this in Supabase SQL Editor:
-
-  CREATE TABLE visits (id bigserial primary key, session_id text, created_at timestamptz default now(), device text, os text, browser text, referrer text, source text, city text, region text, country text, time_on_site int4 default 0, clicks jsonb default '[]');
-  CREATE TABLE messages (id bigserial primary key, created_at timestamptz default now(), nome text, whatsapp text, ramo text, lida bool default false);
-  ALTER TABLE visits ENABLE ROW LEVEL SECURITY;
-  ALTER TABLE messages ENABLE ROW LEVEL SECURITY;
-  CREATE POLICY "allow all" ON visits FOR ALL USING (true) WITH CHECK (true);
-  CREATE POLICY "allow all" ON messages FOR ALL USING (true) WITH CHECK (true);
-*/
-
-// ⚠️ CONFIGURE AQUI
-const SUPABASE_URL = 'COLE_AQUI';
-const SUPABASE_ANON_KEY = 'COLE_AQUI';
+// ⚠️ CONFIGURE AQUI: cole a URL do seu Google Apps Script
+const APPS_SCRIPT_URL = 'COLE_AQUI';
 
 // ── AUTH ──────────────────────────────────────────────
 const CREDS = { email: "renatozenidesign@gmail.com", password: "97132021" };
@@ -391,27 +376,16 @@ if (sessionStorage.getItem(SESSION_KEY)) {
   document.addEventListener('DOMContentLoaded', showDashboard);
 }
 
-// ── SUPABASE ──────────────────────────────────────────
-let sb = null;
+// ── APPS SCRIPT DATA LAYER ────────────────────────────
 let allVisits = [];
 let allMessages = [];
 let currentFilter = 'today';
 let customFrom = null, customTo = null;
 let sortCol = 'created_at', sortDir = -1;
 
-function initSupabase() {
-  try {
-    if (SUPABASE_URL === 'COLE_AQUI') return false;
-    const { createClient } = supabase;
-    sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-    return true;
-  } catch(e) { console.warn('Supabase error:', e); return false; }
-}
-
 // ── DASHBOARD INIT ───────────────────────────────────
 async function initDashboard() {
-  const ok = initSupabase();
-  if (!ok) {
+  if (APPS_SCRIPT_URL === 'COLE_AQUI') {
     showDemoNotice();
     return;
   }
@@ -420,21 +394,19 @@ async function initDashboard() {
 
 function showDemoNotice() {
   document.getElementById('visitsLoading').innerHTML =
-    '<p style="color:var(--yellow);font-weight:600;">⚠️ Supabase não configurado.</p><p style="margin-top:8px;font-size:13px;">Edite as constantes <code>SUPABASE_URL</code> e <code>SUPABASE_ANON_KEY</code> no topo do script com suas credenciais.</p>';
+    '<p style="color:var(--yellow);font-weight:600;">&#9888; Apps Script não configurado.</p><p style="margin-top:8px;font-size:13px;">Configure a URL do Apps Script para ver dados reais.</p>';
   document.getElementById('msgsLoading').innerHTML =
-    '<p style="color:var(--yellow);font-weight:600;">⚠️ Supabase não configurado.</p>';
+    '<p style="color:var(--yellow);font-weight:600;">&#9888; Apps Script não configurado.</p>';
 }
 
 async function loadAll() {
   try {
-    const [vRes, mRes] = await Promise.all([
-      sb.from('visits').select('*').order('created_at', { ascending: false }).limit(2000),
-      sb.from('messages').select('*').order('created_at', { ascending: false })
+    const [visits, messages] = await Promise.all([
+      fetch(APPS_SCRIPT_URL + '?action=getVisits').then(r => r.json()),
+      fetch(APPS_SCRIPT_URL + '?action=getMessages').then(r => r.json())
     ]);
-    if (vRes.error) throw vRes.error;
-    if (mRes.error) throw mRes.error;
-    allVisits = vRes.data || [];
-    allMessages = mRes.data || [];
+    allVisits = Array.isArray(visits) ? visits.reverse() : [];
+    allMessages = Array.isArray(messages) ? messages.reverse() : [];
     render();
     renderMessages();
   } catch(e) {
@@ -635,7 +607,7 @@ function renderMessages() {
 
 async function markRead(id) {
   try {
-    await sb.from('messages').update({ lida: true }).eq('id', id);
+    fetch(APPS_SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: 'markRead', id }) });
     const msg = allMessages.find(m => m.id === id);
     if (msg) { msg.lida = true; }
     renderMessages();
@@ -652,7 +624,7 @@ function setFilter(filter, btn) {
   customFrom = null; customTo = null;
   document.querySelectorAll('#filterBtns .filter-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
-  if (allVisits.length || sb) render();
+  if (allVisits.length) render();
 }
 
 function applyCustomRange() {
@@ -663,7 +635,7 @@ function applyCustomRange() {
   customTo   = to   ? new Date(to   + 'T23:59:59') : new Date(8640000000000000);
   currentFilter = 'custom';
   document.querySelectorAll('#filterBtns .filter-btn').forEach(b => b.classList.remove('active'));
-  if (allVisits.length || sb) render();
+  if (allVisits.length) render();
 }
 
 // ── TABS ──────────────────────────────────────────────

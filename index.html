@@ -690,25 +690,18 @@
     lastScroll = current;
   });
 </script>
-<!-- Supabase SDK -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-// ⚠️ CONFIGURE AQUI
-const SUPABASE_URL = 'COLE_AQUI';
-const SUPABASE_ANON_KEY = 'COLE_AQUI';
+// ⚠️ CONFIGURE AQUI: cole a URL do seu Google Apps Script
+const APPS_SCRIPT_URL = 'COLE_AQUI';
 
-let sb = null;
-let visitId = null;
+let visitSessionId = null;
+let visitClicks = [];
 let visitStartTime = Date.now();
-let currentClicks = [];
 
-try {
-  if (SUPABASE_URL !== 'COLE_AQUI') {
-    const { createClient } = supabase;
-    sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-    initTracking();
-  }
-} catch(e) { console.warn('Supabase não configurado:', e.message); }
+function post(data) {
+  if (APPS_SCRIPT_URL === 'COLE_AQUI') return;
+  fetch(APPS_SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(data) });
+}
 
 function detectOS(ua) {
   if (/iPhone|iPad|iPod/.test(ua)) return 'iOS';
@@ -730,68 +723,40 @@ function detectBrowser(ua) {
 function detectSource(ref) {
   if (!ref) return 'Direto';
   try {
-    const host = new URL(ref).hostname;
-    if (/google/.test(host)) return 'Google';
-    if (/instagram/.test(host)) return 'Instagram';
-    if (/facebook|fb\.com/.test(host)) return 'Facebook';
-    if (/youtube/.test(host)) return 'YouTube';
-    if (/tiktok/.test(host)) return 'TikTok';
-    return host.replace('www.','');
+    const h = new URL(ref).hostname;
+    if (/google/.test(h)) return 'Google';
+    if (/instagram/.test(h)) return 'Instagram';
+    if (/facebook|fb\.com/.test(h)) return 'Facebook';
+    if (/youtube/.test(h)) return 'YouTube';
+    if (/tiktok/.test(h)) return 'TikTok';
+    return h.replace('www.','');
   } catch(e) { return 'Direto'; }
 }
 
-function genSessionId() {
-  return Math.random().toString(36).substr(2,9) + Date.now().toString(36);
-}
-
 async function initTracking() {
+  if (APPS_SCRIPT_URL === 'COLE_AQUI') return;
   try {
     const ua = navigator.userAgent;
-    const session_id = genSessionId();
-    const device = window.innerWidth <= 900 ? 'mobile' : 'desktop';
-    const os = detectOS(ua);
-    const browser = detectBrowser(ua);
-    const referrer = document.referrer;
-    const source = detectSource(referrer);
-
-    let city = '', region = '', country = '';
+    visitSessionId = Math.random().toString(36).substr(2,9) + Date.now().toString(36);
+    let city='', region='', country='';
     try {
-      const geo = await fetch('https://ipapi.co/json/').then(r => r.json());
-      city = geo.city || '';
-      region = geo.region || '';
-      country = geo.country_name || '';
+      const geo = await fetch('https://ipapi.co/json/').then(r=>r.json());
+      city=geo.city||''; region=geo.region||''; country=geo.country_name||'';
     } catch(e) {}
-
-    const { data, error } = await sb.from('visits').insert({
-      session_id, device, os, browser, referrer, source,
-      city, region, country, time_on_site: 0, clicks: []
-    }).select().single();
-
-    if (!error && data) {
-      visitId = data.id;
-    }
-
-    document.addEventListener('click', async (e) => {
-      try {
-        const btn = e.target.closest('.btn-primary, .btn-nav, .btn-form');
-        if (btn && visitId) {
-          const newClick = { button: btn.textContent.trim(), timestamp: new Date().toISOString() };
-          currentClicks = [...currentClicks, newClick];
-          await sb.from('visits').update({ clicks: currentClicks }).eq('id', visitId);
-        }
-      } catch(e) {}
+    post({ action:'saveVisit', sessionId:visitSessionId, device: window.innerWidth<=900?'mobile':'desktop',
+      os:detectOS(ua), browser:detectBrowser(ua), referrer:document.referrer||'',
+      source:detectSource(document.referrer), city, region, country });
+    document.addEventListener('click', e => {
+      const btn = e.target.closest('.btn-primary,.btn-nav,.btn-form');
+      if (btn && visitSessionId) {
+        visitClicks.push({ button: btn.textContent.trim(), timestamp: new Date().toISOString() });
+        post({ action:'updateVisit', sessionId:visitSessionId, clicks:visitClicks });
+      }
     });
-
     window.addEventListener('beforeunload', () => {
-      try {
-        if (visitId) {
-          const seconds = Math.round((Date.now() - visitStartTime) / 1000);
-          // Best-effort async update on unload
-          sb.from('visits').update({ time_on_site: seconds }).eq('id', visitId);
-        }
-      } catch(e) {}
+      post({ action:'updateVisit', sessionId:visitSessionId, timeOnSite: Math.round((Date.now()-visitStartTime)/1000) });
     });
-  } catch(e) { console.warn('Tracking error:', e.message); }
+  } catch(e) {}
 }
 
 async function submitForm(e) {
@@ -799,15 +764,11 @@ async function submitForm(e) {
   const nome = document.getElementById('formNome').value.trim();
   const whatsapp = document.getElementById('formWhatsapp').value.trim();
   const ramo = document.getElementById('formRamo').value.trim();
-
-  if (sb && (nome || whatsapp || ramo)) {
-    try {
-      await sb.from('messages').insert({ nome, whatsapp, ramo, lida: false });
-    } catch(e) { console.warn('Erro ao salvar mensagem:', e.message); }
-  }
-
-  window.open('https://wa.me/5511969937808', '_blank');
+  post({ action:'saveMessage', nome, whatsapp, ramo });
+  window.open('https://wa.me/5511969937808','_blank');
 }
+
+initTracking();
 </script>
 </body>
 </html>
