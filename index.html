@@ -208,11 +208,12 @@
     .depoimentos-grid-wrap { display: grid; grid-template-columns: 1fr 2fr; gap: 60px; align-items: start; }
     .google-logo img { width: 90px; margin-top: 16px; }
     .depoimentos-cards-wrap { position: relative; }
-    .depoimentos-cards { display: flex; gap: 20px; overflow: hidden; }
-    .depo-card { background: var(--bg-card-light); border-radius: 16px; padding: 28px; flex: 0 0 calc(50% - 10px); min-height: 180px; box-sizing: border-box; display: flex; flex-direction: column; justify-content: space-between; }
+    .depo-page { display: none; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .depo-page.active { display: grid; }
+    .depo-card { background: var(--bg-card-light); border-radius: 16px; padding: 28px; min-height: 170px; box-sizing: border-box; display: flex; flex-direction: column; justify-content: space-between; }
     .depo-name { font-family: var(--font-title); font-size: 16px; font-weight: 700; color: var(--white); margin-bottom: 4px; }
-    .depo-role { font-size: 13px; color: var(--yellow); margin-bottom: 14px; }
-    .depo-text { font-size: 14px; color: var(--gray-light); line-height: 1.7; flex: 1; }
+    .depo-role { font-size: 13px; color: var(--yellow); }
+    .depo-text { font-size: 14px; color: var(--gray-light); line-height: 1.7; margin-bottom: 20px; }
     .depo-nav { display: flex; gap: 10px; margin-top: 20px; }
     .depo-btn { background: var(--bg-card-light); border: none; color: var(--white); width: 40px; height: 40px; border-radius: 50%; cursor: pointer; font-size: 18px; display: flex; align-items: center; justify-content: center; transition: background 0.2s; }
     .depo-btn:hover { background: var(--yellow); color: #111; }
@@ -279,7 +280,6 @@
       .motivos-col .motivo-icon { margin: 0 0 16px 0 !important; }
       .motivos-form-card { order: 7; max-width: 100%; min-width: unset; }
       .depoimentos-grid-wrap { grid-template-columns: 1fr; }
-      .depo-card { flex: 0 0 100%; min-height: 160px; }
       .faq-wrap { grid-template-columns: 1fr; }
       .navbar-links { display: none; }
       .cta-card { padding: 40px 24px; }
@@ -510,7 +510,8 @@
         </div>
       </div>
       <div class="depoimentos-cards-wrap">
-        <div class="depoimentos-cards" id="depoCarousel">
+        <!-- Página 1 -->
+        <div class="depo-page active">
           <div class="depo-card">
             <p class="depo-text">"Além de registrar, me ajudaram a entender como funciona o INPI e me orientaram sobre a melhor forma de proteger minha marca. Vale cada centavo!"</p>
             <div><div class="depo-name">Roberto Lima</div><div class="depo-role">Barbeiro</div></div>
@@ -527,6 +528,9 @@
             <p class="depo-text">"Profissionais de confiança, sempre me atualizavam sobre cada passo. Minha marca foi concedida sem nenhum problema."</p>
             <div><div class="depo-name">Juliana Rocha</div><div class="depo-role">Esteticista</div></div>
           </div>
+        </div>
+        <!-- Página 2 -->
+        <div class="depo-page">
           <div class="depo-card">
             <p class="depo-text">"Nunca pensei que registrar minha marca fosse tão simples. A ZenPi cuidou de tudo e em menos de uma semana já tinha o protocolo em mãos."</p>
             <div><div class="depo-name">Thiago Almeida</div><div class="depo-role">Personal Trainer</div></div>
@@ -543,6 +547,9 @@
             <p class="depo-text">"Já tinha tentado entender o processo sozinha e desisti. Com a ZenPi foi completamente diferente, resolveram tudo rapidinho e com muita eficiência."</p>
             <div><div class="depo-name">Aline Ferreira</div><div class="depo-role">Designer de Interiores</div></div>
           </div>
+        </div>
+        <!-- Página 3 -->
+        <div class="depo-page">
           <div class="depo-card">
             <p class="depo-text">"Investimento que valeu muito. Agora tenho segurança de que ninguém vai usar o nome da minha barbearia. Recomendo sem hesitar."</p>
             <div><div class="depo-name">Rafael Oliveira</div><div class="depo-role">Barbeiro</div></div>
@@ -559,12 +566,15 @@
             <p class="depo-text">"Super recomendo! Achei que ia ser complicado mas foi tudo muito simples. Me sinto mais segura agora que minha marca está registrada."</p>
             <div><div class="depo-name">Bianca Cardoso</div><div class="depo-role">Instrutora de Yoga</div></div>
           </div>
+        </div>
+        <!-- Página 4 -->
+        <div class="depo-page">
           <div class="depo-card">
             <p class="depo-text">"Atendimento humanizado e eficiente. Senti que realmente se importavam com o resultado, não só em fechar o serviço. Ótima experiência."</p>
             <div><div class="depo-name">Marcos Vieira</div><div class="depo-role">Dono de Restaurante</div></div>
           </div>
           <div class="depo-card">
-            <p class="depo-text">"Estava com receio de registrar por conta dos trâmites burocráticos, mas a ZenPi simplificou tudo. Processo ágil e atendimento de primeira."</p>
+            <p class="depo-text">"Estava com receio da burocracia, mas a ZenPi simplificou tudo. Processo ágil, atendimento de primeira e resultado garantido."</p>
             <div><div class="depo-name">Isabela Ramos</div><div class="depo-role">Arquiteta</div></div>
           </div>
           <div class="depo-card">
@@ -670,28 +680,16 @@
 
 <script>
   (function() {
-    const carousel = document.getElementById('depoCarousel');
     const prev = document.getElementById('depoPrev');
     const next = document.getElementById('depoNext');
-    if (!carousel || !prev || !next) return;
-    let index = 0;
-    function getVisible() { return window.innerWidth <= 900 ? 1 : 2; }
-    function getCardWidth() {
-      const card = carousel.querySelector('.depo-card');
-      if (!card) return 0;
-      const gap = 20;
-      return card.offsetWidth + gap;
+    if (!prev || !next) return;
+    const pages = Array.from(document.querySelectorAll('.depo-page'));
+    let current = 0;
+    function show(n) {
+      pages.forEach(function(p, i) { p.classList.toggle('active', i === n); });
     }
-    function update() {
-      const max = carousel.querySelectorAll('.depo-card').length - getVisible();
-      if (index < 0) index = 0;
-      if (index > max) index = max;
-      carousel.style.transform = 'translateX(-' + (index * getCardWidth()) + 'px)';
-      carousel.style.transition = 'transform 0.4s ease';
-    }
-    prev.addEventListener('click', function() { index--; update(); });
-    next.addEventListener('click', function() { index++; update(); });
-    window.addEventListener('resize', function() { index = 0; update(); });
+    prev.addEventListener('click', function() { current = (current - 1 + pages.length) % pages.length; show(current); });
+    next.addEventListener('click', function() { current = (current + 1) % pages.length; show(current); });
   })();
 </script>
 
