@@ -207,11 +207,15 @@
     #depoimentos { background: var(--bg-main); }
     .depoimentos-grid-wrap { display: grid; grid-template-columns: 1fr 2fr; gap: 60px; align-items: start; }
     .google-logo img { width: 90px; margin-top: 16px; }
-    .depoimentos-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-    .depo-card { background: var(--bg-card-light); border-radius: 16px; padding: 28px; }
+    .depoimentos-cards-wrap { position: relative; }
+    .depoimentos-cards { display: flex; gap: 20px; overflow: hidden; }
+    .depo-card { background: var(--bg-card-light); border-radius: 16px; padding: 28px; flex: 0 0 calc(50% - 10px); min-height: 180px; box-sizing: border-box; display: flex; flex-direction: column; justify-content: space-between; }
     .depo-name { font-family: var(--font-title); font-size: 16px; font-weight: 700; color: var(--white); margin-bottom: 4px; }
     .depo-role { font-size: 13px; color: var(--yellow); margin-bottom: 14px; }
-    .depo-text { font-size: 14px; color: var(--gray-light); line-height: 1.7; }
+    .depo-text { font-size: 14px; color: var(--gray-light); line-height: 1.7; flex: 1; }
+    .depo-nav { display: flex; gap: 10px; margin-top: 20px; }
+    .depo-btn { background: var(--bg-card-light); border: none; color: var(--white); width: 40px; height: 40px; border-radius: 50%; cursor: pointer; font-size: 18px; display: flex; align-items: center; justify-content: center; transition: background 0.2s; }
+    .depo-btn:hover { background: var(--yellow); color: #111; }
 
     /* FAQ */
     #faq { background: var(--bg-main); }
@@ -275,7 +279,7 @@
       .motivos-col .motivo-icon { margin: 0 0 16px 0 !important; }
       .motivos-form-card { order: 7; max-width: 100%; min-width: unset; }
       .depoimentos-grid-wrap { grid-template-columns: 1fr; }
-      .depoimentos-cards { grid-template-columns: 1fr; }
+      .depo-card { flex: 0 0 100%; min-height: 160px; }
       .faq-wrap { grid-template-columns: 1fr; }
       .navbar-links { display: none; }
       .cta-card { padding: 40px 24px; }
@@ -505,26 +509,76 @@
           <img src="imagens/Logo-Google-1024x346-1.webp" alt="Google" />
         </div>
       </div>
-      <div class="depoimentos-cards">
-        <div class="depo-card">
-          <div class="depo-name">Roberto Lima</div>
-          <div class="depo-role">Barbeiro</div>
-          <p class="depo-text">"Além de registrar, me ajudaram a entender como funciona o INPI e me orientaram sobre a melhor forma de proteger minha marca. Vale cada centavo!"</p>
+      <div class="depoimentos-cards-wrap">
+        <div class="depoimentos-cards" id="depoCarousel">
+          <div class="depo-card">
+            <p class="depo-text">"Além de registrar, me ajudaram a entender como funciona o INPI e me orientaram sobre a melhor forma de proteger minha marca. Vale cada centavo!"</p>
+            <div><div class="depo-name">Roberto Lima</div><div class="depo-role">Barbeiro</div></div>
+          </div>
+          <div class="depo-card">
+            <p class="depo-text">"Equipe ágil e muito profissional. Fiz tudo online e recebi acompanhamento até o final. Sempre vou indicar de olhos fechados."</p>
+            <div><div class="depo-name">Fernanda Souza</div><div class="depo-role">Nutricionista</div></div>
+          </div>
+          <div class="depo-card">
+            <p class="depo-text">"Atendimento excelente! Me explicaram tudo com clareza e cuidaram de todo o processo. Não precisei me preocupar com nada."</p>
+            <div><div class="depo-name">Carlos Mendes</div><div class="depo-role">Dono de Hamburgueria</div></div>
+          </div>
+          <div class="depo-card">
+            <p class="depo-text">"Profissionais de confiança, sempre me atualizavam sobre cada passo. Minha marca foi concedida sem nenhum problema."</p>
+            <div><div class="depo-name">Juliana Rocha</div><div class="depo-role">Esteticista</div></div>
+          </div>
+          <div class="depo-card">
+            <p class="depo-text">"Nunca pensei que registrar minha marca fosse tão simples. A ZenPi cuidou de tudo e em menos de uma semana já tinha o protocolo em mãos."</p>
+            <div><div class="depo-name">Thiago Almeida</div><div class="depo-role">Personal Trainer</div></div>
+          </div>
+          <div class="depo-card">
+            <p class="depo-text">"Fui muito bem atendida desde o primeiro contato. Explicaram cada etapa com paciência e minha marca foi registrada sem nenhuma dor de cabeça."</p>
+            <div><div class="depo-name">Patrícia Nunes</div><div class="depo-role">Confeiteira</div></div>
+          </div>
+          <div class="depo-card">
+            <p class="depo-text">"Precisava proteger o nome do meu estúdio antes de expandir. A equipe foi super atenciosa e o processo correu melhor do que eu esperava."</p>
+            <div><div class="depo-name">Leonardo Costa</div><div class="depo-role">Fotógrafo</div></div>
+          </div>
+          <div class="depo-card">
+            <p class="depo-text">"Já tinha tentado entender o processo sozinha e desisti. Com a ZenPi foi completamente diferente, resolveram tudo rapidinho e com muita eficiência."</p>
+            <div><div class="depo-name">Aline Ferreira</div><div class="depo-role">Designer de Interiores</div></div>
+          </div>
+          <div class="depo-card">
+            <p class="depo-text">"Investimento que valeu muito. Agora tenho segurança de que ninguém vai usar o nome da minha barbearia. Recomendo sem hesitar."</p>
+            <div><div class="depo-name">Rafael Oliveira</div><div class="depo-role">Barbeiro</div></div>
+          </div>
+          <div class="depo-card">
+            <p class="depo-text">"Processo transparente do início ao fim. Fui informada de tudo e não tive nenhuma surpresa no caminho. Equipe muito comprometida."</p>
+            <div><div class="depo-name">Camila Batista</div><div class="depo-role">Terapeuta Holística</div></div>
+          </div>
+          <div class="depo-card">
+            <p class="depo-text">"Minha loja online cresceu muito e eu precisava proteger a marca logo. A ZenPi resolveu tudo de forma rápida e com ótimo preço."</p>
+            <div><div class="depo-name">André Martins</div><div class="depo-role">Empreendedor Digital</div></div>
+          </div>
+          <div class="depo-card">
+            <p class="depo-text">"Super recomendo! Achei que ia ser complicado mas foi tudo muito simples. Me sinto mais segura agora que minha marca está registrada."</p>
+            <div><div class="depo-name">Bianca Cardoso</div><div class="depo-role">Instrutora de Yoga</div></div>
+          </div>
+          <div class="depo-card">
+            <p class="depo-text">"Atendimento humanizado e eficiente. Senti que realmente se importavam com o resultado, não só em fechar o serviço. Ótima experiência."</p>
+            <div><div class="depo-name">Marcos Vieira</div><div class="depo-role">Dono de Restaurante</div></div>
+          </div>
+          <div class="depo-card">
+            <p class="depo-text">"Estava com receio de registrar por conta dos trâmites burocráticos, mas a ZenPi simplificou tudo. Processo ágil e atendimento de primeira."</p>
+            <div><div class="depo-name">Isabela Ramos</div><div class="depo-role">Arquiteta</div></div>
+          </div>
+          <div class="depo-card">
+            <p class="depo-text">"Me ajudaram a registrar o nome e o logotipo da minha empresa. Excelente custo-benefício e equipe sempre disponível para tirar dúvidas."</p>
+            <div><div class="depo-name">Diego Fonseca</div><div class="depo-role">Dono de Petshop</div></div>
+          </div>
+          <div class="depo-card">
+            <p class="depo-text">"Rápido, prático e sem enrolação. Desde o contato inicial até o protocolo, tudo foi muito transparente. Com certeza voltarei para outras marcas."</p>
+            <div><div class="depo-name">Larissa Teixeira</div><div class="depo-role">Consultora de Moda</div></div>
+          </div>
         </div>
-        <div class="depo-card">
-          <div class="depo-name">Fernanda Souza</div>
-          <div class="depo-role">Nutricionista</div>
-          <p class="depo-text">"Equipe ágil e muito profissional. Fiz tudo online e recebi acompanhamento até o final. Sempre vou indicar de olhos fechados."</p>
-        </div>
-        <div class="depo-card">
-          <div class="depo-name">Carlos Mendes</div>
-          <div class="depo-role">Dono de Hamburgueria</div>
-          <p class="depo-text">"Atendimento excelente! Me explicaram tudo com clareza e cuidaram de todo o processo. Não precisei me preocupar com nada."</p>
-        </div>
-        <div class="depo-card">
-          <div class="depo-name">Juliana Rocha</div>
-          <div class="depo-role">Estéticista</div>
-          <p class="depo-text">"Profissionais de confiança, sempre me atualizavam sobre cada passo. Minha marca foi concedida sem nenhum problema."</p>
+        <div class="depo-nav">
+          <button class="depo-btn" id="depoPrev">&#8592;</button>
+          <button class="depo-btn" id="depoNext">&#8594;</button>
         </div>
       </div>
     </div>
@@ -613,6 +667,33 @@
 <a class="whatsapp-float" href="https://wa.me/5511947759578?text=Ol%C3%A1%21%20Gostaria%20de%20registrar%20minha%20marca%20no%20INPI.%20Pode%20me%20ajudar%3F" target="_blank" aria-label="WhatsApp">
   <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
 </a>
+
+<script>
+  (function() {
+    const carousel = document.getElementById('depoCarousel');
+    const prev = document.getElementById('depoPrev');
+    const next = document.getElementById('depoNext');
+    if (!carousel || !prev || !next) return;
+    let index = 0;
+    function getVisible() { return window.innerWidth <= 900 ? 1 : 2; }
+    function getCardWidth() {
+      const card = carousel.querySelector('.depo-card');
+      if (!card) return 0;
+      const gap = 20;
+      return card.offsetWidth + gap;
+    }
+    function update() {
+      const max = carousel.querySelectorAll('.depo-card').length - getVisible();
+      if (index < 0) index = 0;
+      if (index > max) index = max;
+      carousel.style.transform = 'translateX(-' + (index * getCardWidth()) + 'px)';
+      carousel.style.transition = 'transform 0.4s ease';
+    }
+    prev.addEventListener('click', function() { index--; update(); });
+    next.addEventListener('click', function() { index++; update(); });
+    window.addEventListener('resize', function() { index = 0; update(); });
+  })();
+</script>
 
 <script>
   const cert = document.querySelector('.hero-cert-badge');
