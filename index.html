@@ -121,6 +121,11 @@
     /* TICKER */
     .ticker-bar { background: var(--yellow); padding: 10px 0; overflow: hidden; white-space: nowrap; margin-top: -30px; position: relative; z-index: 1; }
     @media (max-width: 900px) { .ticker-bar { margin-top: 4px; } }
+    .motivos-title-mobile { display: none; }
+    @media (max-width: 900px) {
+      .motivos-title-desktop { display: none; }
+      .motivos-title-mobile { display: inline; }
+    }
     .ticker-track { display: inline-flex; align-items: center; gap: 80px; animation: ticker 30s linear infinite; white-space: nowrap; }
     .ticker-track span { font-family: var(--font-body); font-size: 14px; font-weight: 700; color: #111; letter-spacing: 1.5px; text-transform: uppercase; flex-shrink: 0; }
     .ticker-dot { display: none; }
@@ -336,7 +341,7 @@
 <section class="section" id="motivos">
   <div class="section-inner">
     <div class="motivos-top">
-      <h2 class="section-title">Motivos para Registrar sua Marca</h2>
+      <h2 class="section-title"><span class="motivos-title-desktop">Motivos para Registrar sua Marca</span><span class="motivos-title-mobile">Motivos para<br/>Registrar sua<br/>Marca</span></h2>
       <p class="section-subtitle">Você sabia que qualquer um pode registrar o nome da sua marca?</p>
     </div>
     <div class="motivos-grid">
