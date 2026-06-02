@@ -122,7 +122,11 @@
     .ticker-bar { background: var(--yellow); padding: 10px 0; overflow: hidden; white-space: nowrap; margin-top: -30px; position: relative; z-index: 1; }
     @media (max-width: 900px) { .ticker-bar { margin-top: 4px; } }
     .motivos-title-mobile { display: none; }
-    @media (max-width: 900px) { .motivos-subtitle { display: none; } }
+    @media (max-width: 900px) {
+      .motivos-subtitle { display: none; }
+      .motivo-item, .motivos-form-card { transform: translateX(-110%); transition: transform 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94); }
+      .motivo-item.visivel, .motivos-form-card.visivel { transform: translateX(0); }
+    }
     @media (max-width: 900px) {
       .motivos-title-desktop { display: none; }
       .motivos-title-mobile { display: inline; }
@@ -640,37 +644,16 @@
     if (!isOpen) item.classList.add('open');
   }
   if (window.innerWidth <= 900) {
-    const motivos = document.querySelectorAll('.motivo-item');
-    motivos.forEach((el, i) => {
-      el.style.opacity = '1';
-      el.style.transform = 'translateX(-110%)';
-      el.style.transition = `transform 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94) ${i * 0.12}s`;
-    });
+    const els = document.querySelectorAll('.motivo-item, .motivos-form-card');
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
-              entry.target.style.transform = 'translateX(0)';
+          entry.target.classList.add('visivel');
           observer.unobserve(entry.target);
         }
       });
-    }, { threshold: 0.15 });
-    motivos.forEach(el => observer.observe(el));
-
-    const formCard = document.querySelector('.motivos-form-card');
-    if (formCard) {
-      formCard.style.opacity = '1';
-      formCard.style.transform = 'translateX(-110%)';
-      formCard.style.transition = 'transform 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
-      const formObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            entry.target.style.transform = 'translateX(0)';
-            formObserver.unobserve(entry.target);
-          }
-        });
-      }, { threshold: 0.15 });
-      formObserver.observe(formCard);
-    }
+    }, { threshold: 0.1 });
+    els.forEach(el => observer.observe(el));
   }
 
   let lastScroll = 0;
