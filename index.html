@@ -644,18 +644,17 @@
     if (!isOpen) item.classList.add('open');
   }
   if (window.innerWidth <= 900) {
-    const els = document.querySelectorAll('.motivo-item, .motivos-form-card');
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('visivel');
-          observer.unobserve(entry.target);
+    const els = Array.from(document.querySelectorAll('.motivo-item, .motivos-form-card'));
+    function checkEls() {
+      els.forEach(el => {
+        const rect = el.getBoundingClientRect();
+        if (rect.top < window.innerHeight * 0.9) {
+          el.classList.add('visivel');
         }
       });
-    }, { threshold: 0.1 });
-    requestAnimationFrame(() => requestAnimationFrame(() => {
-      els.forEach(el => observer.observe(el));
-    }));
+    }
+    window.addEventListener('scroll', checkEls, { passive: true });
+    setTimeout(checkEls, 100);
   }
 
   let lastScroll = 0;
