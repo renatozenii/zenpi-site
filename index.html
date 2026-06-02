@@ -589,7 +589,9 @@
   const cert = document.querySelector('.hero-cert-badge');
   const heroSection = document.querySelector('#home');
   if (cert && heroSection) {
-    if (window.innerWidth <= 900) {
+    const isMobile = window.innerWidth <= 900;
+    const parallaxDelay = isMobile ? 2500 : 1500;
+    if (isMobile) {
       setTimeout(() => cert.classList.add('cert-visible'), 900);
     }
     setTimeout(() => {
@@ -609,7 +611,7 @@
       heroSection.addEventListener('mouseleave', () => {
         cert.style.transform = 'translate(0, 0)';
       });
-    }, 1500);
+    }, parallaxDelay);
   }
 
   let isVista = false;
