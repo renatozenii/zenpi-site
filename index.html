@@ -172,9 +172,8 @@
 
     /* LOGOS */
     .logos-section { background: transparent; padding: 40px 0; overflow: hidden; }
-    .marquee-wrapper { display: flex; gap: 100px; animation: marquee 20s linear infinite; width: max-content; align-items: center; will-change: transform; transform: translateZ(0); }
-    .marquee-wrapper img { height: 32px; width: auto; object-fit: contain; filter: brightness(0) invert(1); opacity: 0.4; }
-    @keyframes marquee { from { transform: translate3d(0,0,0); } to { transform: translate3d(-50%,0,0); } }
+    .marquee-wrapper { display: flex; gap: 100px; width: max-content; align-items: center; will-change: transform; }
+    .marquee-wrapper img { height: 32px; width: auto; object-fit: contain; filter: brightness(0) invert(1); opacity: 0.4; flex-shrink: 0; }
 
     /* PREÇOS */
     #precos { background: var(--bg-main); text-align: center; }
@@ -422,15 +421,7 @@
 
 <div class="logos-section">
   <div style="overflow:hidden;">
-    <div class="marquee-wrapper">
-      <img src="imagens/2-1-1.webp" alt="Smiles" />
-      <img src="imagens/3-1-1.webp" alt="Madero" />
-      <img src="imagens/4-1-1.webp" alt="Integral Médica" />
-      <img src="imagens/5-1.webp" alt="Melissa" />
-      <img src="imagens/6-1.webp" alt="Marca 6" />
-      <img src="imagens/7-1.webp" alt="Marca 7" />
-      <img src="imagens/9-1.webp" alt="Marca 9" />
-      <img src="imagens/8-1.webp" alt="Marca 8" />
+    <div class="marquee-wrapper" id="marqueeWrapper">
       <img src="imagens/2-1-1.webp" alt="Smiles" />
       <img src="imagens/3-1-1.webp" alt="Madero" />
       <img src="imagens/4-1-1.webp" alt="Integral Médica" />
@@ -696,6 +687,25 @@
     }
     lastScroll = current;
   });
+</script>
+<script>
+// Marquee infinito sem salto
+(function() {
+  const wrapper = document.getElementById('marqueeWrapper');
+  if (!wrapper) return;
+  // Duplica o conteúdo para loop contínuo
+  wrapper.innerHTML += wrapper.innerHTML;
+  const totalWidth = wrapper.scrollWidth / 2;
+  let pos = 0;
+  const speed = 0.5; // px por frame
+  function step() {
+    pos -= speed;
+    if (pos <= -totalWidth) pos = 0;
+    wrapper.style.transform = 'translateX(' + pos + 'px)';
+    requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+})();
 </script>
 <script>
 // ⚠️ CONFIGURE AQUI: cole a URL do seu Google Apps Script
