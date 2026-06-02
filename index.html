@@ -696,17 +696,20 @@
 (function() {
   const wrapper = document.getElementById('marqueeWrapper');
   if (!wrapper) return;
-  // Duplica o conteúdo para loop contínuo
   wrapper.innerHTML += wrapper.innerHTML;
-  const totalWidth = wrapper.scrollWidth / 2;
+  let totalWidth = 0;
   let pos = 0;
-  const speed = window.innerWidth <= 900 ? 1.8 : 1.2; // px por frame
+  const speed = window.innerWidth <= 900 ? 1.8 : 1.2;
   function step() {
     pos -= speed;
-    if (pos <= -totalWidth) pos = 0;
+    if (totalWidth && pos <= -totalWidth) pos += totalWidth;
     wrapper.style.transform = 'translateX(' + pos + 'px)';
     requestAnimationFrame(step);
   }
+  // Calcula após imagens carregarem para totalWidth correto
+  window.addEventListener('load', function() {
+    totalWidth = wrapper.scrollWidth / 2;
+  });
   requestAnimationFrame(step);
 })();
 </script>
