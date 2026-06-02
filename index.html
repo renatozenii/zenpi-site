@@ -656,6 +656,23 @@
       });
     }, { threshold: 0.15 });
     motivos.forEach(el => observer.observe(el));
+
+    const formCard = document.querySelector('.motivos-form-card');
+    if (formCard) {
+      formCard.style.opacity = '0';
+      formCard.style.transform = 'translateX(-60px)';
+      formCard.style.transition = 'opacity 1.4s ease, transform 1.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+      const formObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.style.opacity = '1';
+            entry.target.style.transform = 'translateX(0)';
+            formObserver.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.15 });
+      formObserver.observe(formCard);
+    }
   }
 
   let lastScroll = 0;
