@@ -642,15 +642,14 @@
   if (window.innerWidth <= 900) {
     const motivos = document.querySelectorAll('.motivo-item');
     motivos.forEach((el, i) => {
-      el.style.opacity = '0';
+      el.style.opacity = '1';
       el.style.transform = 'translateX(-60px)';
-      el.style.transition = `opacity 1.4s ease ${i * 0.15}s, transform 1.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) ${i * 0.15}s`;
+      el.style.transition = `transform 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94) ${i * 0.12}s`;
     });
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
-          entry.target.style.opacity = '1';
-          entry.target.style.transform = 'translateX(0)';
+              entry.target.style.transform = 'translateX(0)';
           observer.unobserve(entry.target);
         }
       });
@@ -659,13 +658,12 @@
 
     const formCard = document.querySelector('.motivos-form-card');
     if (formCard) {
-      formCard.style.opacity = '0';
+      formCard.style.opacity = '1';
       formCard.style.transform = 'translateX(-60px)';
-      formCard.style.transition = 'opacity 1.4s ease, transform 1.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+      formCard.style.transition = 'transform 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
       const formObserver = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
           if (entry.isIntersecting) {
-            entry.target.style.opacity = '1';
             entry.target.style.transform = 'translateX(0)';
             formObserver.unobserve(entry.target);
           }
