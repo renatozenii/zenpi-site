@@ -653,7 +653,9 @@
         }
       });
     }, { threshold: 0.1 });
-    els.forEach(el => observer.observe(el));
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      els.forEach(el => observer.observe(el));
+    }));
   }
 
   let lastScroll = 0;
